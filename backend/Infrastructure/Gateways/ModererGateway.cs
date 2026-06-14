@@ -1,6 +1,7 @@
 using Core.IGateways;
-using Infrastructure.Models;
+using Core.Models;
 using Infrastructure.Repositories.Abstractions;
+using Infrastructure.Utils;
 
 namespace Infrastructure.Gateways;
 
@@ -15,27 +16,31 @@ public class ModererGateway : IModererGateway
 
     public IEnumerable<Moderer> GetAllModerations()
     {
-        return _modererRepository.GetAllModerations();
+        return _modererRepository.GetAllModerations().Select(moderation => moderation.ToCore());
     }
 
     public Moderer? GetModerationById(int moderationId)
     {
-        return _modererRepository.GetModerationById(moderationId);
+        var moderation = _modererRepository.GetModerationById(moderationId);
+
+        return moderation?.ToCore();
     }
 
     public IEnumerable<Moderer> GetModerationsByAnnonceId(int annonceId)
     {
-        return _modererRepository.GetModerationsByAnnonceId(annonceId);
+        return _modererRepository.GetModerationsByAnnonceId(annonceId).Select(moderation => moderation.ToCore());
     }
 
     public void AddModeration(Moderer moderation)
     {
-        _modererRepository.AddModeration(moderation);
+        var moderationDb = moderation.ToInfrastructure();
+        _modererRepository.AddModeration(moderationDb);
+        moderation.Id = moderationDb.IdModeration;
     }
 
     public void UpdateModeration(Moderer moderation)
     {
-        _modererRepository.UpdateModeration(moderation);
+        _modererRepository.UpdateModeration(moderation.ToInfrastructure());
     }
 
     public void DeleteModeration(int moderationId)

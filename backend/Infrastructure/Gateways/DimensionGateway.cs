@@ -1,6 +1,7 @@
 using Core.IGateways;
-using Infrastructure.Models;
+using Core.Models;
 using Infrastructure.Repositories.Abstractions;
+using Infrastructure.Utils;
 
 namespace Infrastructure.Gateways;
 
@@ -15,27 +16,33 @@ public class DimensionGateway : IDimensionGateway
 
     public IEnumerable<Dimension> GetAllDimensions()
     {
-        return _dimensionRepository.GetAllDimensions();
+        return _dimensionRepository.GetAllDimensions().Select(dimension => dimension.ToCore());
     }
 
     public Dimension? GetDimensionById(int dimensionId)
     {
-        return _dimensionRepository.GetDimensionById(dimensionId);
+        var dimension = _dimensionRepository.GetDimensionById(dimensionId);
+
+        return dimension?.ToCore();
     }
 
     public Dimension? GetDimensionByAnnonceId(int annonceId)
     {
-        return _dimensionRepository.GetDimensionByAnnonceId(annonceId);
+        var dimension = _dimensionRepository.GetDimensionByAnnonceId(annonceId);
+
+        return dimension?.ToCore();
     }
 
     public void AddDimension(Dimension dimension)
     {
-        _dimensionRepository.AddDimension(dimension);
+        var dimensionDb = dimension.ToInfrastructure();
+        _dimensionRepository.AddDimension(dimensionDb);
+        dimension.Id = dimensionDb.IdDimension;
     }
 
     public void UpdateDimension(Dimension dimension)
     {
-        _dimensionRepository.UpdateDimension(dimension);
+        _dimensionRepository.UpdateDimension(dimension.ToInfrastructure());
     }
 
     public void DeleteDimension(int dimensionId)

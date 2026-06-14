@@ -1,6 +1,7 @@
 using Core.IGateways;
-using Infrastructure.Models;
+using Core.Models;
 using Infrastructure.Repositories.Abstractions;
+using Infrastructure.Utils;
 
 namespace Infrastructure.Gateways;
 
@@ -15,22 +16,26 @@ public class StatutUtilisateurGateway : IStatutUtilisateurGateway
 
     public IEnumerable<StatutUtilisateur> GetAllStatutsUtilisateur()
     {
-        return _statutUtilisateurRepository.GetAllStatutsUtilisateur();
+        return _statutUtilisateurRepository.GetAllStatutsUtilisateur().Select(statut => statut.ToCore());
     }
 
     public StatutUtilisateur? GetStatutUtilisateurById(int statutUtilisateurId)
     {
-        return _statutUtilisateurRepository.GetStatutUtilisateurById(statutUtilisateurId);
+        var statut = _statutUtilisateurRepository.GetStatutUtilisateurById(statutUtilisateurId);
+
+        return statut?.ToCore();
     }
 
     public void AddStatutUtilisateur(StatutUtilisateur statutUtilisateur)
     {
-        _statutUtilisateurRepository.AddStatutUtilisateur(statutUtilisateur);
+        var statutDb = statutUtilisateur.ToInfrastructure();
+        _statutUtilisateurRepository.AddStatutUtilisateur(statutDb);
+        statutUtilisateur.Id = statutDb.IdStatutUtilisateur;
     }
 
     public void UpdateStatutUtilisateur(StatutUtilisateur statutUtilisateur)
     {
-        _statutUtilisateurRepository.UpdateStatutUtilisateur(statutUtilisateur);
+        _statutUtilisateurRepository.UpdateStatutUtilisateur(statutUtilisateur.ToInfrastructure());
     }
 
     public void DeleteStatutUtilisateur(int statutUtilisateurId)

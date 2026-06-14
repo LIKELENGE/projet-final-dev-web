@@ -1,6 +1,7 @@
 using Core.IGateways;
-using Infrastructure.Models;
+using Core.Models;
 using Infrastructure.Repositories.Abstractions;
+using Infrastructure.Utils;
 
 namespace Infrastructure.Gateways;
 
@@ -15,32 +16,36 @@ public class AnnonceGateway : IAnnonceGateway
 
     public IEnumerable<Annonce> GetAllAnnonces()
     {
-        return _annonceRepository.GetAllAnnonces();
+        return _annonceRepository.GetAllAnnonces().Select(annonce => annonce.ToCore());
     }
 
     public Annonce? GetAnnonceById(int annonceId)
     {
-        return _annonceRepository.GetAnnonceById(annonceId);
+        var annonce = _annonceRepository.GetAnnonceById(annonceId);
+
+        return annonce?.ToCore();
     }
 
     public IEnumerable<Annonce> GetAnnoncesByUtilisateurId(int utilisateurId)
     {
-        return _annonceRepository.GetAnnoncesByUtilisateurId(utilisateurId);
+        return _annonceRepository.GetAnnoncesByUtilisateurId(utilisateurId).Select(annonce => annonce.ToCore());
     }
 
     public IEnumerable<Annonce> GetAnnoncesByCategorieId(int categorieId)
     {
-        return _annonceRepository.GetAnnoncesByCategorieId(categorieId);
+        return _annonceRepository.GetAnnoncesByCategorieId(categorieId).Select(annonce => annonce.ToCore());
     }
 
     public void AddAnnonce(Annonce annonce)
     {
-        _annonceRepository.AddAnnonce(annonce);
+        var annonceDb = annonce.ToInfrastructure();
+        _annonceRepository.AddAnnonce(annonceDb);
+        annonce.Id = annonceDb.IdAnnonce;
     }
 
     public void UpdateAnnonce(Annonce annonce)
     {
-        _annonceRepository.UpdateAnnonce(annonce);
+        _annonceRepository.UpdateAnnonce(annonce.ToInfrastructure());
     }
 
     public void DeleteAnnonce(int annonceId)

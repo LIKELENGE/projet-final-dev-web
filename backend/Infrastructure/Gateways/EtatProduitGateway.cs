@@ -1,6 +1,7 @@
 using Core.IGateways;
-using Infrastructure.Models;
+using Core.Models;
 using Infrastructure.Repositories.Abstractions;
+using Infrastructure.Utils;
 
 namespace Infrastructure.Gateways;
 
@@ -15,22 +16,26 @@ public class EtatProduitGateway : IEtatProduitGateway
 
     public IEnumerable<EtatProduit> GetAllEtatsProduit()
     {
-        return _etatProduitRepository.GetAllEtatsProduit();
+        return _etatProduitRepository.GetAllEtatsProduit().Select(etat => etat.ToCore());
     }
 
     public EtatProduit? GetEtatProduitById(int etatProduitId)
     {
-        return _etatProduitRepository.GetEtatProduitById(etatProduitId);
+        var etat = _etatProduitRepository.GetEtatProduitById(etatProduitId);
+
+        return etat?.ToCore();
     }
 
     public void AddEtatProduit(EtatProduit etatProduit)
     {
-        _etatProduitRepository.AddEtatProduit(etatProduit);
+        var etatDb = etatProduit.ToInfrastructure();
+        _etatProduitRepository.AddEtatProduit(etatDb);
+        etatProduit.Id = etatDb.IdEtatProduit;
     }
 
     public void UpdateEtatProduit(EtatProduit etatProduit)
     {
-        _etatProduitRepository.UpdateEtatProduit(etatProduit);
+        _etatProduitRepository.UpdateEtatProduit(etatProduit.ToInfrastructure());
     }
 
     public void DeleteEtatProduit(int etatProduitId)

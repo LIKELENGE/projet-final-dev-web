@@ -1,6 +1,7 @@
 using Core.IGateways;
-using Infrastructure.Models;
+using Core.Models;
 using Infrastructure.Repositories.Abstractions;
+using Infrastructure.Utils;
 
 namespace Infrastructure.Gateways;
 
@@ -15,22 +16,24 @@ public class ProduitGateway : IProduitGateway
 
     public IEnumerable<Produit> GetAllProduits()
     {
-        return _produitRepository.GetAllProduits();
+        return _produitRepository.GetAllProduits().Select(produit => produit.ToCore());
     }
 
     public Produit? GetProduitByAnnonceId(int annonceId)
     {
-        return _produitRepository.GetProduitByAnnonceId(annonceId);
+        var produit = _produitRepository.GetProduitByAnnonceId(annonceId);
+
+        return produit?.ToCore();
     }
 
     public void AddProduit(Produit produit)
     {
-        _produitRepository.AddProduit(produit);
+        _produitRepository.AddProduit(produit.ToInfrastructure());
     }
 
     public void UpdateProduit(Produit produit)
     {
-        _produitRepository.UpdateProduit(produit);
+        _produitRepository.UpdateProduit(produit.ToInfrastructure());
     }
 
     public void DeleteProduit(int annonceId)

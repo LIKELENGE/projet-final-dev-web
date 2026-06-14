@@ -1,6 +1,7 @@
 using Core.IGateways;
-using Infrastructure.Models;
+using Core.Models;
 using Infrastructure.Repositories.Abstractions;
+using Infrastructure.Utils;
 
 namespace Infrastructure.Gateways;
 
@@ -15,22 +16,26 @@ public class EtatAnnonceGateway : IEtatAnnonceGateway
 
     public IEnumerable<EtatAnnonce> GetAllEtatsAnnonce()
     {
-        return _etatAnnonceRepository.GetAllEtatsAnnonce();
+        return _etatAnnonceRepository.GetAllEtatsAnnonce().Select(etat => etat.ToCore());
     }
 
     public EtatAnnonce? GetEtatAnnonceById(int etatId)
     {
-        return _etatAnnonceRepository.GetEtatAnnonceById(etatId);
+        var etat = _etatAnnonceRepository.GetEtatAnnonceById(etatId);
+
+        return etat?.ToCore();
     }
 
     public void AddEtatAnnonce(EtatAnnonce etatAnnonce)
     {
-        _etatAnnonceRepository.AddEtatAnnonce(etatAnnonce);
+        var etatDb = etatAnnonce.ToInfrastructure();
+        _etatAnnonceRepository.AddEtatAnnonce(etatDb);
+        etatAnnonce.Id = etatDb.IdEtat;
     }
 
     public void UpdateEtatAnnonce(EtatAnnonce etatAnnonce)
     {
-        _etatAnnonceRepository.UpdateEtatAnnonce(etatAnnonce);
+        _etatAnnonceRepository.UpdateEtatAnnonce(etatAnnonce.ToInfrastructure());
     }
 
     public void DeleteEtatAnnonce(int etatId)

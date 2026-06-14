@@ -1,6 +1,7 @@
 using Core.IGateways;
-using Infrastructure.Models;
+using Core.Models;
 using Infrastructure.Repositories.Abstractions;
+using Infrastructure.Utils;
 
 namespace Infrastructure.Gateways;
 
@@ -15,22 +16,26 @@ public class SexeGateway : ISexeGateway
 
     public IEnumerable<Sexe> GetAllSexes()
     {
-        return _sexeRepository.GetAllSexes();
+        return _sexeRepository.GetAllSexes().Select(sexe => sexe.ToCore());
     }
 
     public Sexe? GetSexeById(int codeSexe)
     {
-        return _sexeRepository.GetSexeById(codeSexe);
+        var sexe = _sexeRepository.GetSexeById(codeSexe);
+
+        return sexe?.ToCore();
     }
 
     public void AddSexe(Sexe sexe)
     {
-        _sexeRepository.AddSexe(sexe);
+        var sexeDb = sexe.ToInfrastructure();
+        _sexeRepository.AddSexe(sexeDb);
+        sexe.Code = sexeDb.CodeSexe;
     }
 
     public void UpdateSexe(Sexe sexe)
     {
-        _sexeRepository.UpdateSexe(sexe);
+        _sexeRepository.UpdateSexe(sexe.ToInfrastructure());
     }
 
     public void DeleteSexe(int codeSexe)

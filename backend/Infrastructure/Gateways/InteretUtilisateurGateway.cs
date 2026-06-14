@@ -1,6 +1,7 @@
 using Core.IGateways;
-using Infrastructure.Models;
+using Core.Models;
 using Infrastructure.Repositories.Abstractions;
+using Infrastructure.Utils;
 
 namespace Infrastructure.Gateways;
 
@@ -15,22 +16,26 @@ public class InteretUtilisateurGateway : IInteretUtilisateurGateway
 
     public IEnumerable<InteretUtilisateur> GetAllInteretsUtilisateur()
     {
-        return _interetUtilisateurRepository.GetAllInteretsUtilisateur();
+        return _interetUtilisateurRepository.GetAllInteretsUtilisateur().Select(interet => interet.ToCore());
     }
 
     public InteretUtilisateur? GetInteretUtilisateurById(int interetUtilisateurId)
     {
-        return _interetUtilisateurRepository.GetInteretUtilisateurById(interetUtilisateurId);
+        var interet = _interetUtilisateurRepository.GetInteretUtilisateurById(interetUtilisateurId);
+
+        return interet?.ToCore();
     }
 
     public IEnumerable<InteretUtilisateur> GetInteretsByUtilisateurId(int utilisateurId)
     {
-        return _interetUtilisateurRepository.GetInteretsByUtilisateurId(utilisateurId);
+        return _interetUtilisateurRepository.GetInteretsByUtilisateurId(utilisateurId).Select(interet => interet.ToCore());
     }
 
     public void AddInteretUtilisateur(InteretUtilisateur interetUtilisateur)
     {
-        _interetUtilisateurRepository.AddInteretUtilisateur(interetUtilisateur);
+        var interetDb = interetUtilisateur.ToInfrastructure();
+        _interetUtilisateurRepository.AddInteretUtilisateur(interetDb);
+        interetUtilisateur.Id = interetDb.IdInteretUtilisateur;
     }
 
     public void DeleteInteretUtilisateur(int interetUtilisateurId)

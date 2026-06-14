@@ -1,6 +1,7 @@
 using Core.IGateways;
-using Infrastructure.Models;
+using Core.Models;
 using Infrastructure.Repositories.Abstractions;
+using Infrastructure.Utils;
 
 namespace Infrastructure.Gateways;
 
@@ -15,22 +16,26 @@ public class CategorieGateway : ICategorieGateway
 
     public IEnumerable<Categorie> GetAllCategories()
     {
-        return _categorieRepository.GetAllCategories();
+        return _categorieRepository.GetAllCategories().Select(categorie => categorie.ToCore());
     }
 
     public Categorie? GetCategorieById(int categorieId)
     {
-        return _categorieRepository.GetCategorieById(categorieId);
+        var categorie = _categorieRepository.GetCategorieById(categorieId);
+
+        return categorie?.ToCore();
     }
 
     public void AddCategorie(Categorie categorie)
     {
-        _categorieRepository.AddCategorie(categorie);
+        var categorieDb = categorie.ToInfrastructure();
+        _categorieRepository.AddCategorie(categorieDb);
+        categorie.Id = categorieDb.IdCategorie;
     }
 
     public void UpdateCategorie(Categorie categorie)
     {
-        _categorieRepository.UpdateCategorie(categorie);
+        _categorieRepository.UpdateCategorie(categorie.ToInfrastructure());
     }
 
     public void DeleteCategorie(int categorieId)

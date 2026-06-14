@@ -1,6 +1,7 @@
 using Core.IGateways;
-using Infrastructure.Models;
+using Core.Models;
 using Infrastructure.Repositories.Abstractions;
+using Infrastructure.Utils;
 
 namespace Infrastructure.Gateways;
 
@@ -15,27 +16,31 @@ public class CommentairePhotoGateway : ICommentairePhotoGateway
 
     public IEnumerable<CommentairePhoto> GetAllCommentairesPhoto()
     {
-        return _commentairePhotoRepository.GetAllCommentairesPhoto();
+        return _commentairePhotoRepository.GetAllCommentairesPhoto().Select(commentaire => commentaire.ToCore());
     }
 
     public CommentairePhoto? GetCommentairePhotoById(int commentairePhotoId)
     {
-        return _commentairePhotoRepository.GetCommentairePhotoById(commentairePhotoId);
+        var commentaire = _commentairePhotoRepository.GetCommentairePhotoById(commentairePhotoId);
+
+        return commentaire?.ToCore();
     }
 
     public IEnumerable<CommentairePhoto> GetCommentairesByPhotoAnnonceId(int photoAnnonceId)
     {
-        return _commentairePhotoRepository.GetCommentairesByPhotoAnnonceId(photoAnnonceId);
+        return _commentairePhotoRepository.GetCommentairesByPhotoAnnonceId(photoAnnonceId).Select(commentaire => commentaire.ToCore());
     }
 
     public void AddCommentairePhoto(CommentairePhoto commentairePhoto)
     {
-        _commentairePhotoRepository.AddCommentairePhoto(commentairePhoto);
+        var commentaireDb = commentairePhoto.ToInfrastructure();
+        _commentairePhotoRepository.AddCommentairePhoto(commentaireDb);
+        commentairePhoto.Id = commentaireDb.IdCommentairePhoto;
     }
 
     public void UpdateCommentairePhoto(CommentairePhoto commentairePhoto)
     {
-        _commentairePhotoRepository.UpdateCommentairePhoto(commentairePhoto);
+        _commentairePhotoRepository.UpdateCommentairePhoto(commentairePhoto.ToInfrastructure());
     }
 
     public void DeleteCommentairePhoto(int commentairePhotoId)

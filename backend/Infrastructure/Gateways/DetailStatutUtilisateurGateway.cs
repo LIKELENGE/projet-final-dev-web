@@ -1,6 +1,7 @@
 using Core.IGateways;
-using Infrastructure.Models;
+using Core.Models;
 using Infrastructure.Repositories.Abstractions;
+using Infrastructure.Utils;
 
 namespace Infrastructure.Gateways;
 
@@ -15,27 +16,31 @@ public class DetailStatutUtilisateurGateway : IDetailStatutUtilisateurGateway
 
     public IEnumerable<DetailStatutUtilisateur> GetAllDetailsStatutUtilisateur()
     {
-        return _detailStatutUtilisateurRepository.GetAllDetailsStatutUtilisateur();
+        return _detailStatutUtilisateurRepository.GetAllDetailsStatutUtilisateur().Select(detail => detail.ToCore());
     }
 
     public DetailStatutUtilisateur? GetDetailStatutUtilisateurById(int detailStatutUtilisateurId)
     {
-        return _detailStatutUtilisateurRepository.GetDetailStatutUtilisateurById(detailStatutUtilisateurId);
+        var detail = _detailStatutUtilisateurRepository.GetDetailStatutUtilisateurById(detailStatutUtilisateurId);
+
+        return detail?.ToCore();
     }
 
     public IEnumerable<DetailStatutUtilisateur> GetDetailsByUtilisateurId(int utilisateurId)
     {
-        return _detailStatutUtilisateurRepository.GetDetailsByUtilisateurId(utilisateurId);
+        return _detailStatutUtilisateurRepository.GetDetailsByUtilisateurId(utilisateurId).Select(detail => detail.ToCore());
     }
 
     public void AddDetailStatutUtilisateur(DetailStatutUtilisateur detailStatutUtilisateur)
     {
-        _detailStatutUtilisateurRepository.AddDetailStatutUtilisateur(detailStatutUtilisateur);
+        var detailDb = detailStatutUtilisateur.ToInfrastructure();
+        _detailStatutUtilisateurRepository.AddDetailStatutUtilisateur(detailDb);
+        detailStatutUtilisateur.Id = detailDb.IdDetailStatutUtilisateur;
     }
 
     public void UpdateDetailStatutUtilisateur(DetailStatutUtilisateur detailStatutUtilisateur)
     {
-        _detailStatutUtilisateurRepository.UpdateDetailStatutUtilisateur(detailStatutUtilisateur);
+        _detailStatutUtilisateurRepository.UpdateDetailStatutUtilisateur(detailStatutUtilisateur.ToInfrastructure());
     }
 
     public void DeleteDetailStatutUtilisateur(int detailStatutUtilisateurId)

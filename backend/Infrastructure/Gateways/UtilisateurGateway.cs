@@ -1,6 +1,7 @@
 using Core.IGateways;
-using Infrastructure.Models;
+using Core.Models;
 using Infrastructure.Repositories.Abstractions;
+using Infrastructure.Utils;
 
 namespace Infrastructure.Gateways;
 
@@ -15,27 +16,33 @@ public class UtilisateurGateway : IUtilisateurGateway
 
     public IEnumerable<Utilisateur> GetAllUtilisateurs()
     {
-        return _utilisateurRepository.GetAllUtilisateurs();
+        return _utilisateurRepository.GetAllUtilisateurs().Select(utilisateur => utilisateur.ToCore());
     }
 
     public Utilisateur? GetUtilisateurById(int utilisateurId)
     {
-        return _utilisateurRepository.GetUtilisateurById(utilisateurId);
+        var utilisateur = _utilisateurRepository.GetUtilisateurById(utilisateurId);
+
+        return utilisateur?.ToCore();
     }
 
     public Utilisateur? GetUtilisateurByMail(string mail)
     {
-        return _utilisateurRepository.GetUtilisateurByMail(mail);
+        var utilisateur = _utilisateurRepository.GetUtilisateurByMail(mail);
+
+        return utilisateur?.ToCore();
     }
 
     public void AddUtilisateur(Utilisateur utilisateur)
     {
-        _utilisateurRepository.AddUtilisateur(utilisateur);
+        var utilisateurDb = utilisateur.ToInfrastructure();
+        _utilisateurRepository.AddUtilisateur(utilisateurDb);
+        utilisateur.Id = utilisateurDb.IdUtilisateur;
     }
 
     public void UpdateUtilisateur(Utilisateur utilisateur)
     {
-        _utilisateurRepository.UpdateUtilisateur(utilisateur);
+        _utilisateurRepository.UpdateUtilisateur(utilisateur.ToInfrastructure());
     }
 
     public void DeleteUtilisateur(int utilisateurId)

@@ -1,6 +1,7 @@
 using Core.IGateways;
-using Infrastructure.Models;
+using Core.Models;
 using Infrastructure.Repositories.Abstractions;
+using Infrastructure.Utils;
 
 namespace Infrastructure.Gateways;
 
@@ -15,22 +16,26 @@ public class CommuneGateway : ICommuneGateway
 
     public IEnumerable<Commune> GetAllCommunes()
     {
-        return _communeRepository.GetAllCommunes();
+        return _communeRepository.GetAllCommunes().Select(commune => commune.ToCore());
     }
 
     public Commune? GetCommuneById(int communeId)
     {
-        return _communeRepository.GetCommuneById(communeId);
+        var commune = _communeRepository.GetCommuneById(communeId);
+
+        return commune?.ToCore();
     }
 
     public void AddCommune(Commune commune)
     {
-        _communeRepository.AddCommune(commune);
+        var communeDb = commune.ToInfrastructure();
+        _communeRepository.AddCommune(communeDb);
+        commune.Id = communeDb.IdCommune;
     }
 
     public void UpdateCommune(Commune commune)
     {
-        _communeRepository.UpdateCommune(commune);
+        _communeRepository.UpdateCommune(commune.ToInfrastructure());
     }
 
     public void DeleteCommune(int communeId)

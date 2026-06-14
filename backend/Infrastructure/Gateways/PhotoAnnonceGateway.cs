@@ -1,6 +1,7 @@
 using Core.IGateways;
-using Infrastructure.Models;
+using Core.Models;
 using Infrastructure.Repositories.Abstractions;
+using Infrastructure.Utils;
 
 namespace Infrastructure.Gateways;
 
@@ -15,27 +16,31 @@ public class PhotoAnnonceGateway : IPhotoAnnonceGateway
 
     public IEnumerable<PhotoAnnonce> GetAllPhotosAnnonce()
     {
-        return _photoAnnonceRepository.GetAllPhotosAnnonce();
+        return _photoAnnonceRepository.GetAllPhotosAnnonce().Select(photo => photo.ToCore());
     }
 
     public PhotoAnnonce? GetPhotoAnnonceById(int photoAnnonceId)
     {
-        return _photoAnnonceRepository.GetPhotoAnnonceById(photoAnnonceId);
+        var photo = _photoAnnonceRepository.GetPhotoAnnonceById(photoAnnonceId);
+
+        return photo?.ToCore();
     }
 
     public IEnumerable<PhotoAnnonce> GetPhotosByAnnonceId(int annonceId)
     {
-        return _photoAnnonceRepository.GetPhotosByAnnonceId(annonceId);
+        return _photoAnnonceRepository.GetPhotosByAnnonceId(annonceId).Select(photo => photo.ToCore());
     }
 
     public void AddPhotoAnnonce(PhotoAnnonce photoAnnonce)
     {
-        _photoAnnonceRepository.AddPhotoAnnonce(photoAnnonce);
+        var photoDb = photoAnnonce.ToInfrastructure();
+        _photoAnnonceRepository.AddPhotoAnnonce(photoDb);
+        photoAnnonce.Id = photoDb.IdPhotoAnnonce;
     }
 
     public void UpdatePhotoAnnonce(PhotoAnnonce photoAnnonce)
     {
-        _photoAnnonceRepository.UpdatePhotoAnnonce(photoAnnonce);
+        _photoAnnonceRepository.UpdatePhotoAnnonce(photoAnnonce.ToInfrastructure());
     }
 
     public void DeletePhotoAnnonce(int photoAnnonceId)
