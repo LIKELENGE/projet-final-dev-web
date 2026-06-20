@@ -24,28 +24,28 @@ namespace Infrastructure.Repositories
         public IEnumerable<PhotoAnnonce> GetAllPhotosAnnonce()
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM PhotoAnnonce";
+            const string sql = "SELECT * FROM photo_annonce";
             return connection.Query<PhotoAnnonce>(sql);
         }
 
         public PhotoAnnonce? GetPhotoAnnonceById(int photoAnnonceId)
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM PhotoAnnonce WHERE Id_PhotoAnnonce = @IdPhotoAnnonce";
+            const string sql = "SELECT * FROM photo_annonce WHERE id_photo_annonce = @IdPhotoAnnonce";
             return connection.QuerySingleOrDefault<PhotoAnnonce>(sql, new { IdPhotoAnnonce = photoAnnonceId });
         }
 
         public IEnumerable<PhotoAnnonce> GetPhotosByAnnonceId(int annonceId)
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM PhotoAnnonce WHERE Id_Annonce = @IdAnnonce";
+            const string sql = "SELECT * FROM photo_annonce WHERE id_annonce = @IdAnnonce";
             return connection.Query<PhotoAnnonce>(sql, new { IdAnnonce = annonceId });
         }
 
         public void AddPhotoAnnonce(PhotoAnnonce photoAnnonce)
         {
             using var connection = GetConnection();
-            const string sql = @"INSERT INTO PhotoAnnonce (Id_Annonce, Titre, Lien) VALUES (@IdAnnonce, @Titre, @Lien); SELECT LAST_INSERT_ID();";
+            const string sql = @"INSERT INTO photo_annonce (id_annonce, titre, lien) VALUES (@IdAnnonce, @Titre, @Lien); SELECT LAST_INSERT_ID();";
             var id = connection.ExecuteScalar<long>(sql, new { photoAnnonce.IdAnnonce, photoAnnonce.Titre, photoAnnonce.Lien });
             photoAnnonce.IdPhotoAnnonce = (int)id;
         }
@@ -53,14 +53,14 @@ namespace Infrastructure.Repositories
         public void UpdatePhotoAnnonce(PhotoAnnonce photoAnnonce)
         {
             using var connection = GetConnection();
-            const string sql = @"UPDATE PhotoAnnonce SET Id_Annonce = @IdAnnonce, Titre = @Titre, Lien = @Lien WHERE Id_PhotoAnnonce = @IdPhotoAnnonce";
+            const string sql = @"UPDATE photo_annonce SET id_annonce = @IdAnnonce, titre = @Titre, lien = @Lien WHERE id_photo_annonce = @IdPhotoAnnonce";
             connection.Execute(sql, new { photoAnnonce.IdAnnonce, photoAnnonce.Titre, photoAnnonce.Lien, photoAnnonce.IdPhotoAnnonce });
         }
 
         public void DeletePhotoAnnonce(int photoAnnonceId)
         {
             using var connection = GetConnection();
-            const string sql = "DELETE FROM PhotoAnnonce WHERE Id_PhotoAnnonce = @IdPhotoAnnonce";
+            const string sql = "DELETE FROM photo_annonce WHERE id_photo_annonce = @IdPhotoAnnonce";
             connection.Execute(sql, new { IdPhotoAnnonce = photoAnnonceId });
         }
     }

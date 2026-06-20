@@ -287,14 +287,14 @@ INSERT INTO etat_produit (id_etat_produit, nom_etat) VALUES
 INSERT INTO utilisateur 
 (id_utilisateur, nom, prenom, mail, tel, photo_profil, mp, date_inscription, date_naiss, code_sexe, id_commune)
 VALUES
-(1, 'Likelenge', 'Moïse', 'moise@example.com', '+243810000001', 'profil_moise.jpg', 'motdepasse_hash_1', '2025-01-10 08:30:00', '1998-05-12', 1, 1),
-(2, 'Mbuyi', 'Sarah', 'sarah@example.com', '+243810000002', 'profil_sarah.jpg', 'motdepasse_hash_2', '2025-01-12 10:15:00', '2000-03-20', 2, 2),
-(3, 'Kabongo', 'David', 'david@example.com', '+243810000003', 'profil_david.jpg', 'motdepasse_hash_3', '2025-02-01 14:00:00', '1995-11-02', 1, 3),
-(4, 'Lukusa', 'Grace', 'grace@example.com', '+243810000004', 'profil_grace.jpg', 'motdepasse_hash_4', '2025-02-05 16:40:00', '1999-08-18', 2, 1);
+(1, 'Likelenge', 'Moïse', 'moise@example.com', '+243810000001', 'profil_moise.jpg', '08f91946ad0913a56f2f7115a0b964ab0ed66aa99cecfa18fe957195cecfbdd2', '2025-01-10 08:30:00', '1998-05-12', 1, 1),
+(2, 'Mbuyi', 'Sarah', 'sarah@example.com', '+243810000002', 'profil_sarah.jpg', 'dd7f6bfb6e0d8bcd754e97cae4975c07996f00508f8346d649c5814e19c3f9b9', '2025-01-12 10:15:00', '2000-03-20', 2, 2),
+(3, 'Kabongo', 'David', 'david@example.com', '+243810000003', 'profil_david.jpg', '0f14089313b20c1723ec1d660b0aaa4f473cf5b321cd370f2d48b7bcf9a7b234', '2025-02-01 14:00:00', '1995-11-02', 1, 3),
+(4, 'Lukusa', 'Grace', 'grace@example.com', '+243810000004', 'profil_grace.jpg', 'd53ecaf3fc441a2086dc0cdc26692699dc8e12dd80f329414d605f1cdc4da3df', '2025-02-05 16:40:00', '1999-08-18', 2, 1);
 
 INSERT INTO admin (compte, nom, prenom, niveau, mp) VALUES
-(1, 'Admin', 'Principal', 'super_admin', 'admin_hash_1'),
-(2, 'Modérateur', 'Junior', 'moderateur', 'admin_hash_2');
+(1, 'Admin', 'Principal', 'super_admin', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9'),
+(2, 'Modérateur', 'Junior', 'moderateur', '5122d56860571772f8ccc768cfe724ad22d4176bb4b7fc1c624ae628622221f2');
 
 INSERT INTO detail_statut_utilisateur
 (id_detail_statut_utilisateur, id_utilisateur, id_statut_utilisateur, date_statut, delai_statut, illimite)

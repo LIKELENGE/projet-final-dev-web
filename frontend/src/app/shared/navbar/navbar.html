@@ -1,6 +1,6 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
+<nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
   <div class="container-fluid">
-    <a class="navbar-brand" routerLink="/">Marketplace</a>
+    <a class="navbar-brand fw-semibold" routerLink="/articles">Marketplace</a>
 
     <button
       class="navbar-toggler"
@@ -17,42 +17,49 @@
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a
-            class="nav-link"
-            routerLink="/articles"
-            routerLinkActive="active"
-          >
-            Rechercher article
+          <a class="nav-link" routerLink="/articles" routerLinkActive="active">
+            Publications
           </a>
         </li>
 
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            routerLink="/connexion"
-            routerLinkActive="active"
-          >
-            Se connecter
-          </a>
-        </li>
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            routerLink="/inscription"
-            routerLinkActive="active"
-          >
-            S'inscrire
-          </a>
-        </li>
+        @if (utilisateurService.utilisateur()) {
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/articles/nouveau" routerLinkActive="active">
+              Publier
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/mes-articles" routerLinkActive="active">
+              Mes articles
+            </a>
+          </li>
+        }
       </ul>
 
-      <button
-        class="btn btn-outline-secondary"
-        type="button"
-        (click)="toggleTheme()"
-      >
-        {{ isDark ? '☀️' : '🌙' }}
-      </button>
+      <div class="d-flex align-items-lg-center gap-2 flex-column flex-lg-row">
+        @if (utilisateurService.utilisateur(); as utilisateur) {
+          <span class="navbar-text small">
+            {{ utilisateur.prenom }} {{ utilisateur.nom }}
+          </span>
+
+          <button class="btn btn-outline-danger btn-sm" type="button" (click)="deconnecter()">
+            Deconnexion
+          </button>
+        } @else {
+          <a class="btn btn-outline-primary btn-sm" routerLink="/connexion" routerLinkActive="active">
+            Connexion
+          </a>
+
+          <a class="btn btn-primary btn-sm" routerLink="/inscription" routerLinkActive="active">
+            Inscription
+          </a>
+        }
+
+        <button class="btn btn-outline-secondary btn-sm" type="button" (click)="toggleTheme()">
+          {{ isDark ? 'Mode clair' : 'Mode sombre' }}
+        </button>
+      </div>
     </div>
   </div>
 </nav>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterLinkActive, RouterLink } from "@angular/router";
+import { Router, RouterLinkActive, RouterLink } from "@angular/router";
+import { UtilisateurService } from '../../services/utilisateur.service';
 
 @Component({
   selector: 'app-navbar',
@@ -9,6 +10,8 @@ import { RouterLinkActive, RouterLink } from "@angular/router";
   styleUrl: './navbar.css',
 })
 export class Navbar implements OnInit {
+  constructor(public utilisateurService: UtilisateurService, private router: Router) {}
+
   isDark = false;
 
   ngOnInit() {
@@ -25,5 +28,10 @@ export class Navbar implements OnInit {
 
     document.documentElement.setAttribute('data-bs-theme', theme);
     localStorage.setItem('theme', theme);
+  }
+
+  deconnecter() {
+    this.utilisateurService.deconnecter();
+    this.router.navigateByUrl('/articles');
   }
 }

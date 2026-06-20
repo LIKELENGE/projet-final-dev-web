@@ -1,0 +1,103 @@
+<main class="container py-4">
+  <div class="d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
+    <div>
+      <h1 class="h3 mb-1">Nouvel article</h1>
+      <p class="text-body-secondary mb-0">Creez une annonce et envoyez les images dans le backend.</p>
+    </div>
+
+    <a routerLink="/articles" class="btn btn-outline-secondary align-self-start">Retour aux articles</a>
+  </div>
+
+  @if (!utilisateurService.utilisateur()) {
+    <div class="alert alert-warning" role="alert">
+      Vous devez etre connecte pour creer une annonce.
+    </div>
+  } @else {
+    @if (annonceService.erreur()) {
+      <div class="alert alert-danger" role="alert">{{ annonceService.erreur() }}</div>
+    }
+
+    @if (choixService.erreur()) {
+      <div class="alert alert-danger" role="alert">{{ choixService.erreur() }}</div>
+    }
+
+    <form class="border rounded p-3" [formGroup]="annonceForm" (ngSubmit)="creerAnnonce()">
+      <div class="row g-3">
+        <div class="col-12">
+          <label class="form-label" for="nom">Nom</label>
+          <input id="nom" class="form-control" type="text" formControlName="nom" />
+          @if (annonceForm.controls.nom.touched && annonceForm.controls.nom.invalid) {
+            <div class="form-text text-danger">Le nom est obligatoire.</div>
+          }
+        </div>
+
+        <div class="col-12">
+          <label class="form-label" for="description">Description</label>
+          <textarea id="description" class="form-control" rows="4" formControlName="description"></textarea>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <label class="form-label" for="prix">Prix</label>
+          <input id="prix" class="form-control" type="number" min="0" formControlName="prix" />
+        </div>
+
+        <div class="col-12 col-md-4">
+          <label class="form-label" for="categorieId">Categorie</label>
+          <select id="categorieId" class="form-select" formControlName="categorieId">
+            <option [ngValue]="null">Choisir une categorie</option>
+            @for (categorie of choixService.categories(); track categorie.id) {
+              <option [ngValue]="categorie.id">{{ categorie.nom }}</option>
+            }
+          </select>
+          @if (annonceForm.controls.categorieId.touched && annonceForm.controls.categorieId.invalid) {
+            <div class="form-text text-danger">La categorie est obligatoire.</div>
+          }
+        </div>
+
+        <div class="col-12 col-md-4">
+          <label class="form-label" for="communeId">Commune</label>
+          <select id="communeId" class="form-select" formControlName="communeId">
+            <option [ngValue]="null">Non renseignee</option>
+            @for (commune of choixService.communes(); track commune.id) {
+              <option [ngValue]="commune.id">{{ commune.nom }} {{ commune.codePostal || '' }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <section class="mt-4" formArrayName="photos">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h2 class="h5 mb-0">Images</h2>
+          <button class="btn btn-sm btn-outline-primary" type="button" (click)="ajouterPhoto()">Ajouter une image</button>
+        </div>
+
+        @for (photo of photos.controls; track $index) {
+          <div class="row g-2 mb-2" [formGroupName]="$index">
+            <div class="col-12 col-md-4">
+              <input class="form-control" type="text" formControlName="titre" placeholder="Titre de l'image" />
+            </div>
+            <div class="col-12 col-md-4">
+              <input class="form-control" type="file" accept="image/*" (change)="selectionnerImage($event, $index)" />
+            </div>
+            <div class="col-12 col-md">
+              <input class="form-control" type="text" formControlName="lien" placeholder="Chemin genere par le backend ou URL externe" />
+            </div>
+            <div class="col-12 col-md-auto">
+              <button class="btn btn-outline-danger w-100" type="button" (click)="supprimerPhoto($index)">Supprimer</button>
+            </div>
+
+            @if (photo.get('lien')?.value) {
+              <div class="col-12">
+                <img class="image-preview rounded border" [src]="imageSrc(photo.get('lien')?.value)" alt="Apercu image" />
+              </div>
+            }
+          </div>
+        }
+      </section>
+
+      <button class="btn btn-success mt-4" type="submit" [disabled]="annonceService.chargement()">
+        Creer l'annonce
+      </button>
+    </form>
+  }
+</main>

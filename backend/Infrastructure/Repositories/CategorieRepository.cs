@@ -24,21 +24,21 @@ namespace Infrastructure.Repositories
         public IEnumerable<Categorie> GetAllCategories()
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM Categorie";
+            const string sql = "SELECT * FROM categorie";
             return connection.Query<Categorie>(sql);
         }
 
         public Categorie? GetCategorieById(int categorieId)
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM Categorie WHERE Id_Categorie = @IdCategorie";
+            const string sql = "SELECT * FROM categorie WHERE id_categorie = @IdCategorie";
             return connection.QuerySingleOrDefault<Categorie>(sql, new { IdCategorie = categorieId });
         }
 
         public void AddCategorie(Categorie categorie)
         {
             using var connection = GetConnection();
-            const string sql = @"INSERT INTO Categorie (NomCategorie) VALUES (@NomCategorie); SELECT LAST_INSERT_ID();";
+            const string sql = @"INSERT INTO categorie (nom_categorie) VALUES (@NomCategorie); SELECT LAST_INSERT_ID();";
             var id = connection.ExecuteScalar<long>(sql, new { categorie.NomCategorie });
             categorie.IdCategorie = (int)id;
         }
@@ -46,14 +46,14 @@ namespace Infrastructure.Repositories
         public void UpdateCategorie(Categorie categorie)
         {
             using var connection = GetConnection();
-            const string sql = "UPDATE Categorie SET NomCategorie = @NomCategorie WHERE Id_Categorie = @IdCategorie";
+            const string sql = "UPDATE categorie SET nom_categorie = @NomCategorie WHERE id_categorie = @IdCategorie";
             connection.Execute(sql, new { categorie.NomCategorie, categorie.IdCategorie });
         }
 
         public void DeleteCategorie(int categorieId)
         {
             using var connection = GetConnection();
-            const string sql = "DELETE FROM Categorie WHERE Id_Categorie = @IdCategorie";
+            const string sql = "DELETE FROM categorie WHERE id_categorie = @IdCategorie";
             connection.Execute(sql, new { IdCategorie = categorieId });
         }
     }

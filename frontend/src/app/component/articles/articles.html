@@ -1,1 +1,89 @@
-<p>articles works!</p>
+<main class="container py-4">
+  <div class="d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
+    <div>
+      <h1 class="h3 mb-1">Articles</h1>
+      <p class="text-body-secondary mb-0">Toutes les publications sont visibles. Cliquez sur une annonce pour voir ses details.</p>
+    </div>
+
+    <a routerLink="/articles/nouveau" class="btn btn-success align-self-start">Nouvel article</a>
+  </div>
+
+  <section>
+      <h2 class="h4 mb-3">Toutes les publications</h2>
+
+      <form class="row g-2 mb-3" [formGroup]="rechercheForm" (ngSubmit)="rechercher()">
+        <div class="col-12 col-md">
+          <label class="form-label" for="recherche">Recherche</label>
+          <input id="recherche" class="form-control" type="search" formControlName="recherche" placeholder="Nom ou description" />
+        </div>
+
+        <div class="col-12 col-md-3">
+          <label class="form-label" for="categorieRecherche">Categorie</label>
+          <select id="categorieRecherche" class="form-select" formControlName="categorieId">
+            <option [ngValue]="null">Toutes</option>
+            @for (categorie of choixService.categories(); track categorie.id) {
+              <option [ngValue]="categorie.id">{{ categorie.nom }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="col-12 col-md-auto d-flex align-items-end">
+          <button class="btn btn-primary w-100" type="submit">Rechercher</button>
+        </div>
+      </form>
+
+      @if (annonceService.erreur()) {
+        <div class="alert alert-danger" role="alert">{{ annonceService.erreur() }}</div>
+      }
+
+      @if (choixService.erreur()) {
+        <div class="alert alert-danger" role="alert">{{ choixService.erreur() }}</div>
+      }
+
+      @if (annonceService.chargement()) {
+        <div class="alert alert-info" role="status">Chargement en cours...</div>
+      }
+
+      <div class="row g-3">
+        @for (annonce of annonceService.annonces(); track annonce.id) {
+          <div class="col-12 col-md-6 col-xl-4">
+            <article class="card article-card h-100">
+              @if (annonce.photos.length > 0) {
+                <img
+                  class="card-img-top article-image"
+                  [src]="imageSrc(annonce.photos[0].lien)"
+                  [alt]="annonce.photos[0].titre || annonce.nom"
+                />
+              }
+
+              <div class="card-body d-flex flex-column">
+                <div class="d-flex justify-content-between gap-3 mb-2">
+                  <h2 class="h5 card-title mb-0">
+                    <a class="text-decoration-none stretched-link" [routerLink]="['/articles', annonce.id]">
+                      {{ annonce.nom }}
+                    </a>
+                  </h2>
+                  <div class="fw-semibold text-nowrap">{{ annonce.prix }} euro</div>
+                </div>
+
+                <p class="card-text text-body-secondary mb-3">
+                  {{ annonce.description || 'Aucune description' }}
+                </p>
+
+                <div class="small text-body-secondary mt-auto">
+                  <div>Categorie: {{ annonce.categorie?.nom || 'non renseignee' }}</div>
+                  @if (annonce.commune) {
+                    <div>Commune: {{ annonce.commune.nom || 'non renseignee' }}</div>
+                  }
+                </div>
+              </div>
+            </article>
+          </div>
+        } @empty {
+          <div class="col-12">
+            <div class="border rounded p-3 text-body-secondary">Aucune annonce trouvee.</div>
+          </div>
+        }
+      </div>
+  </section>
+</main>

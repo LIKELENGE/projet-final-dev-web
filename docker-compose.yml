@@ -1,0 +1,54 @@
+services:
+  mysql:
+    build:
+      context: ./backend/Infrastructure
+      dockerfile: Dockerfile.mysql
+    container_name: marketplace-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: market_place
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Api/Dockerfile
+    container_name: marketplace-api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: server=mysql;port=3306;database=market_place;user=root;password=root;
+      Jwt__Secret: marketplace-docker-development-secret-key-change-before-release
+      Jwt__ExpirationMinutes: 120
+    ports:
+      - "5124:8080"
+    volumes:
+      - api-images:/app/wwwroot/images/annonces
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: marketplace-frontend
+    restart: unless-stopped
+    ports:
+      - "4200:80"
+    depends_on:
+      - api
+
+volumes:
+  mysql-data:
+  api-images:

@@ -3,10 +3,12 @@ namespace Api.Middleware;
 public class ExceptionHandlingMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly IWebHostEnvironment _environment;
 
-    public ExceptionHandlingMiddleware(RequestDelegate next)
+    public ExceptionHandlingMiddleware(RequestDelegate next, IWebHostEnvironment environment)
     {
         _next = next ?? throw new ArgumentNullException(nameof(next));
+        _environment = environment ?? throw new ArgumentNullException(nameof(environment));
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -23,9 +25,17 @@ public class ExceptionHandlingMiddleware
         {
             await WriteErrorAsync(context, StatusCodes.Status409Conflict, ex.Message);
         }
-        catch (Exception)
+        catch (UnauthorizedAccessException ex)
         {
-            await WriteErrorAsync(context, StatusCodes.Status500InternalServerError, "Une erreur interne est survenue.");
+            await WriteErrorAsync(context, StatusCodes.Status403Forbidden, ex.Message);
+        }
+        catch (Exception ex)
+        {
+            var message = _environment.IsDevelopment()
+                ? ex.Message
+                : "Une erreur interne est survenue.";
+
+            await WriteErrorAsync(context, StatusCodes.Status500InternalServerError, message);
         }
     }
 

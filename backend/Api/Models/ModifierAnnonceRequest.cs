@@ -2,8 +2,6 @@ namespace Api.Models;
 
 public class ModifierAnnonceRequest
 {
-    public int UtilisateurId { get; set; }
-
     public int CategorieId { get; set; }
 
     public int? CommuneId { get; set; }

@@ -1,5 +1,6 @@
 using Core.IGateways;
 using Core.Models;
+using Core.Security;
 using Core.UseCases.Abstractions;
 
 namespace Core.UseCases;
@@ -48,6 +49,8 @@ public class InscrireUtilisateurUseCase : IInscrireUtilisateurUseCase
         {
             utilisateur.DateInscription = DateTime.UtcNow;
         }
+
+        utilisateur.MotDePasseHash = PasswordHasher.Hash(utilisateur.MotDePasseHash);
 
         _utilisateurGateway.AddUtilisateur(utilisateur);
     }

@@ -7,16 +7,23 @@ namespace Core.UseCases;
 public class CreerAnnonceUseCase : ICreerAnnonceUseCase
 {
     private readonly IAnnonceGateway _annonceGateway;
+    private readonly IUtilisateurGateway _utilisateurGateway;
 
-    public CreerAnnonceUseCase(IAnnonceGateway annonceGateway)
+    public CreerAnnonceUseCase(IAnnonceGateway annonceGateway, IUtilisateurGateway utilisateurGateway)
     {
         _annonceGateway = annonceGateway ?? throw new ArgumentNullException(nameof(annonceGateway));
+        _utilisateurGateway = utilisateurGateway ?? throw new ArgumentNullException(nameof(utilisateurGateway));
     }
 
     public void Execute(Annonce annonce)
     {
         ArgumentNullException.ThrowIfNull(annonce);
         ValidateAnnonce(annonce);
+
+        if (_utilisateurGateway.GetUtilisateurById(annonce.Utilisateur!.Id) == null)
+        {
+            throw new InvalidOperationException("L'utilisateur doit etre authentifie pour creer une annonce.");
+        }
 
         if (annonce.DateAjout == default)
         {

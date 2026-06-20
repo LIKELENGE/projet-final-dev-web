@@ -24,21 +24,21 @@ namespace Infrastructure.Repositories
         public IEnumerable<Commune> GetAllCommunes()
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM Commune";
+            const string sql = "SELECT * FROM commune";
             return connection.Query<Commune>(sql);
         }
 
         public Commune? GetCommuneById(int communeId)
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM Commune WHERE Id_Commune = @IdCommune";
+            const string sql = "SELECT * FROM commune WHERE id_commune = @IdCommune";
             return connection.QuerySingleOrDefault<Commune>(sql, new { IdCommune = communeId });
         }
 
         public void AddCommune(Commune commune)
         {
             using var connection = GetConnection();
-            const string sql = @"INSERT INTO Commune (NomCommune, CodePostal) VALUES (@NomCommune, @CodePostal); SELECT LAST_INSERT_ID();";
+            const string sql = @"INSERT INTO commune (nom_commune, code_postal) VALUES (@NomCommune, @CodePostal); SELECT LAST_INSERT_ID();";
             var id = connection.ExecuteScalar<long>(sql, new { commune.NomCommune, commune.CodePostal });
             commune.IdCommune = (int)id;
         }
@@ -46,14 +46,14 @@ namespace Infrastructure.Repositories
         public void UpdateCommune(Commune commune)
         {
             using var connection = GetConnection();
-            const string sql = "UPDATE Commune SET NomCommune = @NomCommune, CodePostal = @CodePostal WHERE Id_Commune = @IdCommune";
+            const string sql = "UPDATE commune SET nom_commune = @NomCommune, code_postal = @CodePostal WHERE id_commune = @IdCommune";
             connection.Execute(sql, new { commune.NomCommune, commune.CodePostal, commune.IdCommune });
         }
 
         public void DeleteCommune(int communeId)
         {
             using var connection = GetConnection();
-            const string sql = "DELETE FROM Commune WHERE Id_Commune = @IdCommune";
+            const string sql = "DELETE FROM commune WHERE id_commune = @IdCommune";
             connection.Execute(sql, new { IdCommune = communeId });
         }
     }

@@ -24,21 +24,21 @@ namespace Infrastructure.Repositories
         public IEnumerable<Sexe> GetAllSexes()
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM Sexe";
+            const string sql = "SELECT * FROM sexe";
             return connection.Query<Sexe>(sql);
         }
 
         public Sexe? GetSexeById(int codeSexe)
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM Sexe WHERE Code_Sexe = @CodeSexe";
+            const string sql = "SELECT * FROM sexe WHERE code_sexe = @CodeSexe";
             return connection.QuerySingleOrDefault<Sexe>(sql, new { CodeSexe = codeSexe });
         }
 
         public void AddSexe(Sexe sexe)
         {
             using var connection = GetConnection();
-            const string sql = @"INSERT INTO Sexe (NomSexe) VALUES (@NomSexe); SELECT LAST_INSERT_ID();";
+            const string sql = @"INSERT INTO sexe (nom_sexe) VALUES (@NomSexe); SELECT LAST_INSERT_ID();";
             var id = connection.ExecuteScalar<long>(sql, new { sexe.NomSexe });
             sexe.CodeSexe = (int)id;
         }
@@ -46,14 +46,14 @@ namespace Infrastructure.Repositories
         public void UpdateSexe(Sexe sexe)
         {
             using var connection = GetConnection();
-            const string sql = "UPDATE Sexe SET NomSexe = @NomSexe WHERE Code_Sexe = @CodeSexe";
+            const string sql = "UPDATE sexe SET nom_sexe = @NomSexe WHERE code_sexe = @CodeSexe";
             connection.Execute(sql, new { sexe.NomSexe, sexe.CodeSexe });
         }
 
         public void DeleteSexe(int codeSexe)
         {
             using var connection = GetConnection();
-            const string sql = "DELETE FROM Sexe WHERE Code_Sexe = @CodeSexe";
+            const string sql = "DELETE FROM sexe WHERE code_sexe = @CodeSexe";
             connection.Execute(sql, new { CodeSexe = codeSexe });
         }
     }

@@ -24,28 +24,28 @@ namespace Infrastructure.Repositories
         public IEnumerable<Utilisateur> GetAllUtilisateurs()
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM Utilisateur";
+            const string sql = "SELECT * FROM utilisateur";
             return connection.Query<Utilisateur>(sql);
         }
 
         public Utilisateur? GetUtilisateurById(int utilisateurId)
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM Utilisateur WHERE Id_Utilisateur = @IdUtilisateur";
+            const string sql = "SELECT * FROM utilisateur WHERE id_utilisateur = @IdUtilisateur";
             return connection.QuerySingleOrDefault<Utilisateur>(sql, new { IdUtilisateur = utilisateurId });
         }
 
         public Utilisateur? GetUtilisateurByMail(string mail)
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM Utilisateur WHERE Mail = @Mail";
+            const string sql = "SELECT * FROM utilisateur WHERE mail = @Mail";
             return connection.QuerySingleOrDefault<Utilisateur>(sql, new { Mail = mail });
         }
 
         public void AddUtilisateur(Utilisateur utilisateur)
         {
             using var connection = GetConnection();
-            const string sql = @"INSERT INTO Utilisateur (Nom, Prenom, Mail, Tel, PhotoProfil, Mp, DateInscription, DateNaiss, CodeSexe, IdCommune)
+            const string sql = @"INSERT INTO utilisateur (nom, prenom, mail, tel, photo_profil, mp, date_inscription, date_naiss, code_sexe, id_commune)
                                  VALUES (@Nom, @Prenom, @Mail, @Tel, @PhotoProfil, @Mp, @DateInscription, @DateNaiss, @CodeSexe, @IdCommune);
                                  SELECT LAST_INSERT_ID();";
 
@@ -57,18 +57,18 @@ namespace Infrastructure.Repositories
         public void UpdateUtilisateur(Utilisateur utilisateur)
         {
             using var connection = GetConnection();
-            const string sql = @"UPDATE Utilisateur SET
-                                    Nom = @Nom,
-                                    Prenom = @Prenom,
-                                    Mail = @Mail,
-                                    Tel = @Tel,
-                                    PhotoProfil = @PhotoProfil,
-                                    Mp = @Mp,
-                                    DateInscription = @DateInscription,
-                                    DateNaiss = @DateNaiss,
-                                    CodeSexe = @CodeSexe,
-                                    IdCommune = @IdCommune
-                                 WHERE Id_Utilisateur = @IdUtilisateur";
+            const string sql = @"UPDATE utilisateur SET
+                                    nom = @Nom,
+                                    prenom = @Prenom,
+                                    mail = @Mail,
+                                    tel = @Tel,
+                                    photo_profil = @PhotoProfil,
+                                    mp = @Mp,
+                                    date_inscription = @DateInscription,
+                                    date_naiss = @DateNaiss,
+                                    code_sexe = @CodeSexe,
+                                    id_commune = @IdCommune
+                                 WHERE id_utilisateur = @IdUtilisateur";
 
             connection.Execute(sql, utilisateur);
         }
@@ -76,7 +76,7 @@ namespace Infrastructure.Repositories
         public void DeleteUtilisateur(int utilisateurId)
         {
             using var connection = GetConnection();
-            const string sql = "DELETE FROM Utilisateur WHERE Id_Utilisateur = @IdUtilisateur";
+            const string sql = "DELETE FROM utilisateur WHERE id_utilisateur = @IdUtilisateur";
             connection.Execute(sql, new { IdUtilisateur = utilisateurId });
         }
     }

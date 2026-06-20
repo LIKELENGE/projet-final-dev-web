@@ -3,6 +3,14 @@
     <div class="card-body p-4 p-md-5">
       <h2 class="text-center mb-4">Connexion</h2>
 
+      @if (utilisateurService.erreur()) {
+        <div class="alert alert-danger" role="alert">{{ utilisateurService.erreur() }}</div>
+      }
+
+      @if (utilisateurService.message()) {
+        <div class="alert alert-success" role="status">{{ utilisateurService.message() }}</div>
+      }
+
       <form (submit)="login($event, email.value, password.value)">
         <div class="mb-3">
           <label for="email" class="form-label">Adresse email</label>
@@ -36,17 +44,17 @@
             </label>
           </div>
 
-          <a href="#" class="text-decoration-none">Mot de passe oublié ?</a>
+          <a href="#" class="text-decoration-none">Mot de passe oublie ?</a>
         </div>
 
-        <button type="submit" class="btn btn-primary w-100">
+        <button type="submit" class="btn btn-primary w-100" [disabled]="utilisateurService.chargement()">
           Se connecter
         </button>
       </form>
 
       <p class="text-center mt-4 mb-0">
         Pas encore de compte ?
-        <a href="#" class="text-decoration-none">Créer un compte</a>
+        <a routerLink="/inscription" class="text-decoration-none">Creer un compte</a>
       </p>
     </div>
   </div>

@@ -22,9 +22,21 @@ public class ModifierAnnonceUseCase : IModifierAnnonceUseCase
             throw new ArgumentException("L'identifiant de l'annonce est invalide.", nameof(annonce));
         }
 
-        if (_annonceGateway.GetAnnonceById(annonce.Id) == null)
+        var annonceExistante = _annonceGateway.GetAnnonceById(annonce.Id);
+
+        if (annonceExistante == null)
         {
             throw new InvalidOperationException("L'annonce a modifier est introuvable.");
+        }
+
+        if (annonce.Utilisateur == null || annonce.Utilisateur.Id <= 0)
+        {
+            throw new ArgumentException("L'annonce doit etre liee a un utilisateur.", nameof(annonce));
+        }
+
+        if (annonceExistante.Utilisateur == null || annonceExistante.Utilisateur.Id != annonce.Utilisateur.Id)
+        {
+            throw new UnauthorizedAccessException("Seul l'auteur de l'annonce peut la modifier.");
         }
 
         if (string.IsNullOrWhiteSpace(annonce.Nom))

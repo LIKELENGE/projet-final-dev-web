@@ -12,7 +12,7 @@ public class InscriptionRequest
 
     public string? PhotoProfil { get; set; }
 
-    public string MotDePasseHash { get; set; } = string.Empty;
+    public string MotDePasse { get; set; } = string.Empty;
 
     public DateTime? DateNaissance { get; set; }
 

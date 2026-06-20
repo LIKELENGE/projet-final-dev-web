@@ -1,0 +1,143 @@
+<main class="container py-4">
+  <div class="d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
+    <div>
+      <h1 class="h3 mb-1">Mes articles</h1>
+      <p class="text-body-secondary mb-0">Gerez uniquement les annonces que vous avez publiees.</p>
+    </div>
+
+    <a routerLink="/articles" class="btn btn-outline-primary align-self-start">Voir toutes les publications</a>
+  </div>
+
+  @if (!utilisateurService.utilisateur()) {
+    <div class="alert alert-warning" role="alert">
+      Vous devez etre connecte pour consulter vos articles.
+    </div>
+  } @else {
+    @if (annonceService.erreur()) {
+      <div class="alert alert-danger" role="alert">{{ annonceService.erreur() }}</div>
+    }
+
+    @if (choixService.erreur()) {
+      <div class="alert alert-danger" role="alert">{{ choixService.erreur() }}</div>
+    }
+
+    @if (annonceService.chargementMesAnnonces()) {
+      <div class="alert alert-info" role="status">Chargement de vos articles...</div>
+    }
+
+    <section class="row g-4">
+      <div class="col-12 col-lg-7">
+        <div class="row g-3">
+          @for (annonce of annonceService.mesAnnonces(); track annonce.id) {
+            <div class="col-12 col-md-6">
+              <article class="card article-card h-100">
+                @if (annonce.photos.length > 0) {
+                  <img
+                    class="card-img-top article-image"
+                    [src]="imageSrc(annonce.photos[0].lien)"
+                    [alt]="annonce.photos[0].titre || annonce.nom"
+                  />
+                }
+
+                <div class="card-body d-flex flex-column">
+                  <div class="d-flex justify-content-between gap-3 mb-2">
+                    <h2 class="h5 card-title mb-0">
+                      <a class="text-decoration-none" [routerLink]="['/articles', annonce.id]">{{ annonce.nom }}</a>
+                    </h2>
+                    <div class="fw-semibold text-nowrap">{{ annonce.prix }} euro</div>
+                  </div>
+
+                  <p class="card-text text-body-secondary mb-3">{{ annonce.description || 'Aucune description' }}</p>
+
+                  <div class="small text-body-secondary mt-auto mb-3">
+                    <div>Categorie: {{ annonce.categorie?.nom || 'non renseignee' }}</div>
+                    @if (annonce.commune) {
+                      <div>Commune: {{ annonce.commune.nom || 'non renseignee' }}</div>
+                    }
+                  </div>
+
+                  <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-primary" type="button" (click)="modifier(annonce)">
+                      Modifier
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" type="button" (click)="supprimer(annonce.id)">
+                      Supprimer
+                    </button>
+                  </div>
+                </div>
+              </article>
+            </div>
+          } @empty {
+            <div class="col-12">
+              <div class="border rounded p-3 text-body-secondary">Vous n'avez pas encore publie d'article.</div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <aside class="col-12 col-lg-5">
+        <div class="border rounded p-3">
+          <h2 class="h5 mb-3">Modifier un article</h2>
+
+          @if (annonceEnEdition()) {
+            <form [formGroup]="modificationForm" (ngSubmit)="enregistrerModification()">
+              <div class="mb-3">
+                <label class="form-label" for="nom">Nom</label>
+                <input id="nom" class="form-control" type="text" formControlName="nom" />
+                @if (modificationForm.controls.nom.touched && modificationForm.controls.nom.invalid) {
+                  <div class="form-text text-danger">Le nom est obligatoire.</div>
+                }
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label" for="description">Description</label>
+                <textarea id="description" class="form-control" rows="4" formControlName="description"></textarea>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label" for="prix">Prix</label>
+                <input id="prix" class="form-control" type="number" min="0" formControlName="prix" />
+              </div>
+
+              <div class="row g-2">
+                <div class="col-12 col-md-6 mb-3">
+                  <label class="form-label" for="categorieId">Categorie</label>
+                  <select id="categorieId" class="form-select" formControlName="categorieId">
+                    <option [ngValue]="null">Choisir une categorie</option>
+                    @for (categorie of choixService.categories(); track categorie.id) {
+                      <option [ngValue]="categorie.id">{{ categorie.nom }}</option>
+                    }
+                  </select>
+                  @if (modificationForm.controls.categorieId.touched && modificationForm.controls.categorieId.invalid) {
+                    <div class="form-text text-danger">La categorie est obligatoire.</div>
+                  }
+                </div>
+
+                <div class="col-12 col-md-6 mb-3">
+                  <label class="form-label" for="communeId">Commune</label>
+                  <select id="communeId" class="form-select" formControlName="communeId">
+                    <option [ngValue]="null">Non renseignee</option>
+                    @for (commune of choixService.communes(); track commune.id) {
+                      <option [ngValue]="commune.id">{{ commune.nom }} {{ commune.codePostal || '' }}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+
+              <div class="d-flex gap-2">
+                <button class="btn btn-success" type="submit" [disabled]="annonceService.chargement()">
+                  Enregistrer
+                </button>
+                <button class="btn btn-outline-secondary" type="button" (click)="annulerModification()">
+                  Annuler
+                </button>
+              </div>
+            </form>
+          } @else {
+            <p class="text-body-secondary mb-0">Selectionnez un article a modifier.</p>
+          }
+        </div>
+      </aside>
+    </section>
+  }
+</main>

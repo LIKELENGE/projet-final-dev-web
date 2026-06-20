@@ -1,4 +1,5 @@
-﻿using Core.IGateways;
+using Core.IGateways;
+using Dapper;
 using Infrastructure.Gateways;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Abstractions;
@@ -10,6 +11,8 @@ public static class ServiceCollectionExtension
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
     {
+        DefaultTypeMap.MatchNamesWithUnderscores = true;
+
         services.AddTransient<IUtilisateurRepository, UtilisateurRepository>();
         services.AddTransient<IAnnonceRepository, AnnonceRepository>();
         services.AddTransient<IProduitRepository, ProduitRepository>();

@@ -299,14 +299,14 @@ INSERT INTO etat_produit (id_etat_produit, nom_etat) VALUES
 INSERT INTO utilisateur
 (id_utilisateur, nom, prenom, mail, tel, photo_profil, mp, date_inscription, date_naiss, code_sexe, id_commune)
 VALUES
-(1, 'Likelenge', 'Moïse', 'moise@example.com', '+243810000001', 'profil_moise.jpg', 'motdepasse_hash_1', '2025-01-10 08:30:00', '1998-05-12', 1, 1),
-(2, 'Mbuyi', 'Sarah', 'sarah@example.com', '+243810000002', 'profil_sarah.jpg', 'motdepasse_hash_2', '2025-01-12 10:15:00', '2000-03-20', 2, 2),
-(3, 'Kabongo', 'David', 'david@example.com', '+243810000003', 'profil_david.jpg', 'motdepasse_hash_3', '2025-02-01 14:00:00', '1995-11-02', 1, 3),
-(4, 'Lukusa', 'Grace', 'grace@example.com', '+243810000004', 'profil_grace.jpg', 'motdepasse_hash_4', '2025-02-05 16:40:00', '1999-08-18', 2, 1);
+(1, 'Likelenge', 'Moïse', 'moise@example.com', '+243810000001', 'profil_moise.jpg', SHA2('moise123', 256), '2025-01-10 08:30:00', '1998-05-12', 1, 1),
+(2, 'Mbuyi', 'Sarah', 'sarah@example.com', '+243810000002', 'profil_sarah.jpg', SHA2('sarah123', 256), '2025-01-12 10:15:00', '2000-03-20', 2, 2),
+(3, 'Kabongo', 'David', 'david@example.com', '+243810000003', 'profil_david.jpg', SHA2('david123', 256), '2025-02-01 14:00:00', '1995-11-02', 1, 3),
+(4, 'Lukusa', 'Grace', 'grace@example.com', '+243810000004', 'profil_grace.jpg', SHA2('grace123', 256), '2025-02-05 16:40:00', '1999-08-18', 2, 1);
 
 INSERT INTO admin (compte, nom, prenom, niveau, mp) VALUES
-(1, 'Admin', 'Principal', 'super_admin', 'admin_hash_1'),
-(2, 'Modérateur', 'Junior', 'moderateur', 'admin_hash_2');
+(1, 'Admin', 'Principal', 'super_admin', SHA2('admin123', 256)),
+(2, 'Modérateur', 'Junior', 'moderateur', SHA2('moderateur123', 256));
 
 INSERT INTO detail_statut_utilisateur
 (id_detail_statut_utilisateur, id_utilisateur, id_statut_utilisateur, date_statut, delai_statut, illimite)

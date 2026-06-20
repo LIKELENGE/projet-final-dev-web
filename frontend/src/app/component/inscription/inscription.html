@@ -1,1 +1,85 @@
-<p>inscription works!</p>
+<main class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-7">
+      <h1 class="h3 mb-3">Inscription</h1>
+
+      @if (utilisateurService.message()) {
+        <div class="alert alert-success" role="status">{{ utilisateurService.message() }}</div>
+      }
+
+      @if (utilisateurService.erreur()) {
+        <div class="alert alert-danger" role="alert">{{ utilisateurService.erreur() }}</div>
+      }
+
+      @if (choixService.erreur()) {
+        <div class="alert alert-danger" role="alert">{{ choixService.erreur() }}</div>
+      }
+
+      <form class="border rounded p-3" [formGroup]="inscriptionForm" (ngSubmit)="inscrire()">
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <label class="form-label" for="prenom">Prenom</label>
+            <input id="prenom" class="form-control" type="text" formControlName="prenom" />
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label class="form-label" for="nom">Nom</label>
+            <input id="nom" class="form-control" type="text" formControlName="nom" />
+          </div>
+
+          <div class="col-12">
+            <label class="form-label" for="mail">Adresse email</label>
+            <input id="mail" class="form-control" type="email" formControlName="mail" />
+            @if (inscriptionForm.controls.mail.touched && inscriptionForm.controls.mail.invalid) {
+              <div class="form-text text-danger">Une adresse email valide est obligatoire.</div>
+            }
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label class="form-label" for="motDePasse">Mot de passe</label>
+            <input id="motDePasse" class="form-control" type="password" formControlName="motDePasse" />
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label class="form-label" for="tel">Telephone</label>
+            <input id="tel" class="form-control" type="tel" formControlName="tel" />
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label class="form-label" for="dateNaissance">Date de naissance</label>
+            <input id="dateNaissance" class="form-control" type="date" formControlName="dateNaissance" />
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label class="form-label" for="codeSexe">Code sexe</label>
+            <select id="codeSexe" class="form-select" formControlName="codeSexe">
+              <option [ngValue]="null">Non renseigne</option>
+              @for (sexe of choixService.sexes(); track sexe.code) {
+                <option [ngValue]="sexe.code">{{ sexe.nom }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label class="form-label" for="communeId">Commune</label>
+            <select id="communeId" class="form-select" formControlName="communeId">
+              <option [ngValue]="null">Non renseignee</option>
+              @for (commune of choixService.communes(); track commune.id) {
+                <option [ngValue]="commune.id">{{ commune.nom }} {{ commune.codePostal || '' }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label" for="photoProfil">Lien photo de profil</label>
+            <input id="photoProfil" class="form-control" type="url" formControlName="photoProfil" />
+          </div>
+        </div>
+
+        <button class="btn btn-primary mt-4 w-100" type="submit" [disabled]="utilisateurService.chargement()">
+          Creer le compte
+        </button>
+      </form>
+    </div>
+  </div>
+</main>

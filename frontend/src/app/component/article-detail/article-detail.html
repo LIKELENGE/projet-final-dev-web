@@ -1,0 +1,60 @@
+<main class="container py-4">
+  <a routerLink="/articles" class="btn btn-outline-secondary mb-3">Retour aux articles</a>
+
+  @if (annonceService.erreur()) {
+    <div class="alert alert-danger" role="alert">{{ annonceService.erreur() }}</div>
+  }
+
+  @if (annonceService.chargement()) {
+    <div class="alert alert-info" role="status">Chargement de l'annonce...</div>
+  }
+
+  @if (annonceService.annonceSelectionnee(); as annonce) {
+    <article class="border rounded p-4">
+      @if (annonce.photos.length > 0) {
+        <div class="row g-3 mb-4">
+          @for (photo of annonce.photos; track photo.id) {
+            <div class="col-12 col-md-6 col-lg-4">
+              <img class="img-fluid rounded border article-image" [src]="imageSrc(photo.lien)" [alt]="photo.titre || annonce.nom" />
+              @if (photo.titre) {
+                <div class="small text-body-secondary mt-1">{{ photo.titre }}</div>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+        <div>
+          <h1 class="h3 mb-2">{{ annonce.nom }}</h1>
+          <p class="text-body-secondary mb-3">{{ annonce.description || 'Aucune description' }}</p>
+        </div>
+
+        <div class="fs-4 fw-semibold">{{ annonce.prix }} euro</div>
+      </div>
+
+      <dl class="row mb-0">
+        <dt class="col-sm-3">Categorie</dt>
+        <dd class="col-sm-9">{{ annonce.categorie?.nom || 'Non renseignee' }}</dd>
+
+        <dt class="col-sm-3">Commune</dt>
+        <dd class="col-sm-9">{{ annonce.commune?.nom || 'Non renseignee' }}</dd>
+
+        <dt class="col-sm-3">Auteur</dt>
+        <dd class="col-sm-9">
+          @if (annonce.utilisateur) {
+            {{ annonce.utilisateur.prenom }} {{ annonce.utilisateur.nom }}
+          } @else {
+            Non renseigne
+          }
+        </dd>
+
+        <dt class="col-sm-3">Publication</dt>
+        <dd class="col-sm-9">{{ annonce.dateAjout | date: 'dd/MM/yyyy HH:mm' }}</dd>
+
+        <dt class="col-sm-3">Derniere modification</dt>
+        <dd class="col-sm-9">{{ annonce.derniereModification | date: 'dd/MM/yyyy HH:mm' }}</dd>
+      </dl>
+    </article>
+  }
+</main>

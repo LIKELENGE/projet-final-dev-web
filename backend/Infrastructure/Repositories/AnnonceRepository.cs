@@ -24,35 +24,35 @@ namespace Infrastructure.Repositories
         public IEnumerable<Annonce> GetAllAnnonces()
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM Annonce";
+            const string sql = "SELECT * FROM annonce";
             return connection.Query<Annonce>(sql);
         }
 
         public Annonce? GetAnnonceById(int annonceId)
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM Annonce WHERE Id_Annonce = @IdAnnonce";
+            const string sql = "SELECT * FROM annonce WHERE id_annonce = @IdAnnonce";
             return connection.QuerySingleOrDefault<Annonce>(sql, new { IdAnnonce = annonceId });
         }
 
         public IEnumerable<Annonce> GetAnnoncesByUtilisateurId(int utilisateurId)
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM Annonce WHERE Id_Utilisateur = @UtilisateurId";
+            const string sql = "SELECT * FROM annonce WHERE id_utilisateur = @UtilisateurId";
             return connection.Query<Annonce>(sql, new { UtilisateurId = utilisateurId });
         }
 
         public IEnumerable<Annonce> GetAnnoncesByCategorieId(int categorieId)
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM Annonce WHERE Id_Categorie = @CategorieId";
+            const string sql = "SELECT * FROM annonce WHERE id_categorie = @CategorieId";
             return connection.Query<Annonce>(sql, new { CategorieId = categorieId });
         }
 
         public void AddAnnonce(Annonce annonce)
         {
             using var connection = GetConnection();
-            const string sql = @"INSERT INTO Annonce (Id_Utilisateur, Id_Categorie, Id_Commune, Nom, Description, Prix, DateAjout, DerniereModification)
+            const string sql = @"INSERT INTO annonce (id_utilisateur, id_categorie, id_commune, nom, description, prix, date_ajout, derniere_modification)
                                  VALUES (@IdUtilisateur, @IdCategorie, @IdCommune, @Nom, @Description, @Prix, @DateAjout, @DerniereModification);
                                  SELECT LAST_INSERT_ID();";
 
@@ -74,16 +74,16 @@ namespace Infrastructure.Repositories
         public void UpdateAnnonce(Annonce annonce)
         {
             using var connection = GetConnection();
-            const string sql = @"UPDATE Annonce SET
-                                    Id_Utilisateur = @IdUtilisateur,
-                                    Id_Categorie = @IdCategorie,
-                                    Id_Commune = @IdCommune,
-                                    Nom = @Nom,
-                                    Description = @Description,
-                                    Prix = @Prix,
-                                    DateAjout = @DateAjout,
-                                    DerniereModification = @DerniereModification
-                                 WHERE Id_Annonce = @IdAnnonce";
+            const string sql = @"UPDATE annonce SET
+                                    id_utilisateur = @IdUtilisateur,
+                                    id_categorie = @IdCategorie,
+                                    id_commune = @IdCommune,
+                                    nom = @Nom,
+                                    description = @Description,
+                                    prix = @Prix,
+                                    date_ajout = @DateAjout,
+                                    derniere_modification = @DerniereModification
+                                 WHERE id_annonce = @IdAnnonce";
 
             connection.Execute(sql, new
             {
@@ -102,7 +102,7 @@ namespace Infrastructure.Repositories
         public void DeleteAnnonce(int annonceId)
         {
             using var connection = GetConnection();
-            const string sql = "DELETE FROM Annonce WHERE Id_Annonce = @IdAnnonce";
+            const string sql = "DELETE FROM annonce WHERE id_annonce = @IdAnnonce";
             connection.Execute(sql, new { IdAnnonce = annonceId });
         }
     }

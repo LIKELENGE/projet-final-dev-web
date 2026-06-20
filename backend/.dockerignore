@@ -1,0 +1,7 @@
+**/bin/
+**/obj/
+.vs/
+*.user
+*.suo
+consignes.pdf
+.~lock.consignes.pdf#
