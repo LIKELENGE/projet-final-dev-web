@@ -67,7 +67,16 @@ docker compose up --build
 L'API utilise le nom de service Docker `mysql` et le port interne `3306` pour communiquer avec la base.
 
 
+## Comptes de test
 
+Ces comptes sont charges par `backend/Infrastructure/db.mysql.sql`.
+
+| Email | Mot de passe |
+| --- | --- |
+| moise@example.com | moise123 |
+| sarah@example.com | sarah123 |
+| david@example.com | david123 |
+| grace@example.com | grace123 |
 
 ## But du logiciel
 
@@ -118,16 +127,7 @@ Le frontend Angular est dans `frontend` et utilise :
 
 Entity Framework n'est pas utilise.
 
-## Comptes de test
 
-Ces comptes sont charges par `backend/Infrastructure/db.mysql.sql`.
-
-| Email | Mot de passe |
-| --- | --- |
-| moise@example.com | moise123 |
-| sarah@example.com | sarah123 |
-| david@example.com | david123 |
-| grace@example.com | grace123 |
 
 Les mots de passe sont stockes en SHA-256. Dans le script MySQL, ils sont generes avec `SHA2('motdepasse', 256)`.
 
