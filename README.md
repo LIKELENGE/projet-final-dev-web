@@ -16,8 +16,8 @@ Le projet sert aussi a demontrer une architecture Angular moderne avec services,
 - Consultation des annonces personnelles dans "Mes articles"
 - Modification et suppression reservees a l'auteur de l'annonce
 - Gestion des categories
-- Chat/conversations
-- Moderation et validation d'annonces
+- Use cases backend pour les conversations
+- Use case backend pour la moderation et la validation d'annonces
 - Listes de choix avec libelles : categories, communes, sexes
 
 ## Architecture
@@ -66,12 +66,27 @@ Les mots de passe sont stockes en SHA-256. Dans le script MySQL, ils sont genere
 
 Prerequis :
 
-- Docker Desktop installe et lance
+- Docker Desktop installe et demarre
+- le port `3306` disponible sur la machine
+
+Pour verifier que le moteur Docker est pret :
+
+```powershell
+docker version
+```
+
+La commande doit afficher une partie `Client` et une partie `Server`.
 
 Depuis la racine du projet :
 
 ```powershell
 docker compose up --build
+```
+
+Pour lancer les conteneurs en arriere-plan :
+
+```powershell
+docker compose up --build -d
 ```
 
 Le service Docker MySQL utilise l'image officielle `mysql:8.4`.
@@ -84,6 +99,24 @@ URLs :
 - API : http://localhost:5124
 - MySQL : localhost:3306
 
+Connexion MySQL depuis un outil externe :
+
+| Parametre | Valeur |
+| --- | --- |
+| Hote | `localhost` |
+| Port | `3306` |
+| Base | `market_place` |
+| Utilisateur | `root` |
+| Mot de passe | `root` |
+
+
+
+Pour arreter et supprimer les conteneurs sans supprimer les donnees MySQL :
+
+```powershell
+docker compose down
+```
+
 Important : le script SQL n'est execute automatiquement que si le volume MySQL est vide.
 Pour supprimer la base Docker et la recharger depuis le script SQL :
 
@@ -91,6 +124,17 @@ Pour supprimer la base Docker et la recharger depuis le script SQL :
 docker compose down -v
 docker compose up --build
 ```
+
+### Erreur : port 3306 deja utilise
+
+Cette erreur signifie qu'un autre serveur MySQL utilise deja le port `3306` sur Windows.
+Il faut arreter le service MySQL local avant de relancer Docker :
+
+```powershell
+docker compose up --build
+```
+
+L'API utilise le nom de service Docker `mysql` et le port interne `3306` pour communiquer avec la base.
 
 ## Lancement manuel
 
@@ -114,17 +158,7 @@ La chaine de connexion locale se trouve dans :
 backend/Api/appsettings.json
 ```
 
-Valeur par defaut :
 
-```json
-"DefaultConnection": "server=localhost;port=3306;database=market_place;user=root;"
-```
-
-Si votre utilisateur MySQL a un mot de passe, ajoutez-le dans la chaine de connexion :
-
-```json
-"DefaultConnection": "server=localhost;port=3306;database=market_place;user=root;password=votre_mot_de_passe;"
-```
 
 ### 2. Backend
 
@@ -176,25 +210,8 @@ http://localhost:4200
 6. Retrouver ses annonces dans "Mes articles".
 7. Modifier ou supprimer uniquement ses propres annonces.
 
-## Images des articles
 
-Les images sont envoyees au backend depuis le formulaire "Nouvel article".
-Le backend stocke les fichiers dans :
 
-```text
-backend/Api/wwwroot/images/annonces
-```
-
-La base de donnees ne stocke pas les octets de l'image. Elle stocke seulement le chemin public, par exemple :
-
-```text
-/images/annonces/nom-du-fichier.jpg
-```
-
-Dans Docker, le volume `api-images` garde ces fichiers entre deux redemarrages.
-
-Il reste possible d'indiquer une URL externe comme `https://exemple.com/image.jpg`.
-Eviter les chemins absolus Windows comme `C:\Users\...\photo.jpg`, car ils ne fonctionneront pas sur une autre machine, sur GitHub ou dans Docker.
 
 ## API principale
 
@@ -215,27 +232,4 @@ Eviter les chemins absolus Windows comme `C:\Users\...\photo.jpg`, car ils ne fo
 - `POST /conversations/{conversationId}/messages`
 - `POST /moderations/annonces/validation`
 
-Les routes de creation, modification, suppression et "mes annonces" utilisent un token JWT :
 
-```http
-Authorization: Bearer <token>
-```
-
-## Preparation du ZIP de remise
-
-Inclure :
-
-- `backend`
-- `frontend`
-- `README.md`
-- `DOCKER.md`
-- `docker-compose.yml`
-
-Exclure :
-
-- `node_modules`
-- `bin`
-- `obj`
-- `dist`
-- `.angular`
-- `.vs`
