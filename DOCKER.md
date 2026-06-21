@@ -10,8 +10,9 @@ Commande depuis la racine du projet :
 docker compose up --build
 ```
 
-L'image MySQL du projet embarque deja le script `backend/Infrastructure/db.mysql.sql`.
-Au premier demarrage, Docker cree la base `market_place` et charge les donnees de test automatiquement.
+Le service MySQL utilise l'image officielle `mysql:8.4`.
+Le fichier `backend/Infrastructure/db.mysql.sql` est monte dans `/docker-entrypoint-initdb.d/01-db.sql`.
+Au premier demarrage du volume MySQL, Docker cree la base `market_place` et charge les donnees de test automatiquement.
 
 URLs :
 
@@ -28,6 +29,7 @@ Comptes de test charges par `backend/Infrastructure/db.mysql.sql` :
 | david@example.com | david123 |
 | grace@example.com | grace123 |
 
+Important : le script SQL n'est execute automatiquement que si le volume MySQL est vide.
 Pour repartir avec une base vide puis recharger le script SQL :
 
 ```powershell

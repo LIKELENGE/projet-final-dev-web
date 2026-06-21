@@ -74,8 +74,9 @@ Depuis la racine du projet :
 docker compose up --build
 ```
 
-La base MySQL Docker est deja preparee avec le script `backend/Infrastructure/db.mysql.sql`.
-Au premier lancement, les tables et les donnees de test sont chargees automatiquement.
+Le service Docker MySQL utilise l'image officielle `mysql:8.4`.
+Le fichier `backend/Infrastructure/db.mysql.sql` est monte dans `/docker-entrypoint-initdb.d/01-db.sql`.
+Au premier lancement du volume MySQL, les tables et les donnees de test sont chargees automatiquement.
 
 URLs :
 
@@ -83,6 +84,7 @@ URLs :
 - API : http://localhost:5124
 - MySQL : localhost:3306
 
+Important : le script SQL n'est execute automatiquement que si le volume MySQL est vide.
 Pour supprimer la base Docker et la recharger depuis le script SQL :
 
 ```powershell
