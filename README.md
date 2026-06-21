@@ -1,5 +1,74 @@
 # Marketplace Angular / .NET
 
+## Lancement rapide avec Docker
+
+Prerequis :
+
+- Docker Desktop installe et demarre
+- le port `3306` disponible sur la machine
+
+Depuis la racine du projet :
+
+```powershell
+docker compose up --build
+```
+
+Pour lancer les conteneurs en arriere-plan :
+
+```powershell
+docker compose up --build -d
+```
+
+Le service Docker MySQL utilise l'image officielle `mysql:8.4`.
+Le fichier `backend/Infrastructure/db.mysql.sql` est monte dans `/docker-entrypoint-initdb.d/01-db.sql`.
+Au premier lancement du volume MySQL, les tables et les donnees de test sont chargees automatiquement.
+
+URLs :
+
+- Frontend : http://localhost:4200
+- API : http://localhost:5124
+- MySQL : localhost:3306
+
+Connexion MySQL depuis un outil externe :
+
+| Parametre | Valeur |
+| --- | --- |
+| Hote | `localhost` |
+| Port | `3306` |
+| Base | `market_place` |
+| Utilisateur | `root` |
+| Mot de passe | `root` |
+
+
+
+Pour arreter et supprimer les conteneurs sans supprimer les donnees MySQL :
+
+```powershell
+docker compose down
+```
+
+Important : le script SQL n'est execute automatiquement que si le volume MySQL est vide.
+Pour supprimer la base Docker et la recharger depuis le script SQL :
+
+```powershell
+docker compose down -v
+docker compose up --build
+```
+
+### Erreur : port 3306 deja utilise
+
+Cette erreur signifie qu'un autre serveur MySQL utilise deja le port `3306` sur Windows.
+Il faut arreter le service MySQL local avant de relancer Docker :
+
+```powershell
+docker compose up --build
+```
+
+L'API utilise le nom de service Docker `mysql` et le port interne `3306` pour communiquer avec la base.
+
+
+
+
 ## But du logiciel
 
 Marketplace est une application web de petites annonces. Elle permet a un visiteur de consulter et rechercher les publications disponibles. Un utilisateur authentifie peut creer ses propres annonces, consulter la section "Mes articles", modifier ou supprimer uniquement ses propres publications. Un administrateur peut gerer les categories et valider les annonces selon les cas d'utilisation prevus.
@@ -62,79 +131,6 @@ Ces comptes sont charges par `backend/Infrastructure/db.mysql.sql`.
 
 Les mots de passe sont stockes en SHA-256. Dans le script MySQL, ils sont generes avec `SHA2('motdepasse', 256)`.
 
-## Lancement rapide avec Docker
-
-Prerequis :
-
-- Docker Desktop installe et demarre
-- le port `3306` disponible sur la machine
-
-Pour verifier que le moteur Docker est pret :
-
-```powershell
-docker version
-```
-
-La commande doit afficher une partie `Client` et une partie `Server`.
-
-Depuis la racine du projet :
-
-```powershell
-docker compose up --build
-```
-
-Pour lancer les conteneurs en arriere-plan :
-
-```powershell
-docker compose up --build -d
-```
-
-Le service Docker MySQL utilise l'image officielle `mysql:8.4`.
-Le fichier `backend/Infrastructure/db.mysql.sql` est monte dans `/docker-entrypoint-initdb.d/01-db.sql`.
-Au premier lancement du volume MySQL, les tables et les donnees de test sont chargees automatiquement.
-
-URLs :
-
-- Frontend : http://localhost:4200
-- API : http://localhost:5124
-- MySQL : localhost:3306
-
-Connexion MySQL depuis un outil externe :
-
-| Parametre | Valeur |
-| --- | --- |
-| Hote | `localhost` |
-| Port | `3306` |
-| Base | `market_place` |
-| Utilisateur | `root` |
-| Mot de passe | `root` |
-
-
-
-Pour arreter et supprimer les conteneurs sans supprimer les donnees MySQL :
-
-```powershell
-docker compose down
-```
-
-Important : le script SQL n'est execute automatiquement que si le volume MySQL est vide.
-Pour supprimer la base Docker et la recharger depuis le script SQL :
-
-```powershell
-docker compose down -v
-docker compose up --build
-```
-
-### Erreur : port 3306 deja utilise
-
-Cette erreur signifie qu'un autre serveur MySQL utilise deja le port `3306` sur Windows.
-Il faut arreter le service MySQL local avant de relancer Docker :
-
-```powershell
-docker compose up --build
-```
-
-L'API utilise le nom de service Docker `mysql` et le port interne `3306` pour communiquer avec la base.
 
 ## Lancement manuel
 
