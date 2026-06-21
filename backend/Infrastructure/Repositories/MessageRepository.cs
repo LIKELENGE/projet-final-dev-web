@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using Dapper;
@@ -16,7 +16,7 @@ namespace Infrastructure.Repositories
         public MessageRepository(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection") ??
-                throw new ArgumentNullException(nameof(configuration), "La connexion à la base de données a échoué : 'DefaultConnection' introuvable.");
+                throw new ArgumentNullException(nameof(configuration), "La connexion a la base de donnees a echoue : 'DefaultConnection' introuvable.");
         }
 
         private IDbConnection GetConnection() => new MySqlConnection(_connectionString);
@@ -24,37 +24,37 @@ namespace Infrastructure.Repositories
         public IEnumerable<Message> GetAllMessages()
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM Message";
+            const string sql = "SELECT * FROM message";
             return connection.Query<Message>(sql);
         }
 
         public Message? GetMessageById(int messageId)
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM Message WHERE Id_Message = @IdMessage";
+            const string sql = "SELECT * FROM message WHERE id_message = @IdMessage";
             return connection.QuerySingleOrDefault<Message>(sql, new { IdMessage = messageId });
         }
 
         public IEnumerable<Message> GetMessagesByConversationId(int conversationId)
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM Message WHERE Id_Conversation = @ConversationId";
+            const string sql = "SELECT * FROM message WHERE id_conversation = @ConversationId";
             return connection.Query<Message>(sql, new { ConversationId = conversationId });
         }
 
         public void AddMessage(Message message)
         {
             using var connection = GetConnection();
-            const string sql = @"INSERT INTO Message (Id_Conversation, Id_Utilisateur, ContenuMessage, DateHeureMessage)
+            const string sql = @"INSERT INTO message (id_conversation, id_utilisateur, contenu_message, date_heure_message)
                                  VALUES (@IdConversation, @IdUtilisateur, @ContenuMessage, @DateHeureMessage);
                                  SELECT LAST_INSERT_ID();";
 
             var id = connection.ExecuteScalar<long>(sql, new
             {
-                IdConversation = message.IdConversation,
-                IdUtilisateur = message.IdUtilisateur,
-                ContenuMessage = message.ContenuMessage,
-                DateHeureMessage = message.DateHeureMessage
+                message.IdConversation,
+                message.IdUtilisateur,
+                message.ContenuMessage,
+                message.DateHeureMessage
             });
 
             message.IdMessage = (int)id;
@@ -63,12 +63,12 @@ namespace Infrastructure.Repositories
         public void UpdateMessage(Message message)
         {
             using var connection = GetConnection();
-            const string sql = @"UPDATE Message SET
-                                    Id_Conversation = @IdConversation,
-                                    Id_Utilisateur = @IdUtilisateur,
-                                    ContenuMessage = @ContenuMessage,
-                                    DateHeureMessage = @DateHeureMessage
-                                 WHERE Id_Message = @IdMessage";
+            const string sql = @"UPDATE message SET
+                                    id_conversation = @IdConversation,
+                                    id_utilisateur = @IdUtilisateur,
+                                    contenu_message = @ContenuMessage,
+                                    date_heure_message = @DateHeureMessage
+                                 WHERE id_message = @IdMessage";
 
             connection.Execute(sql, new
             {
@@ -83,7 +83,7 @@ namespace Infrastructure.Repositories
         public void DeleteMessage(int messageId)
         {
             using var connection = GetConnection();
-            const string sql = "DELETE FROM Message WHERE Id_Message = @IdMessage";
+            const string sql = "DELETE FROM message WHERE id_message = @IdMessage";
             connection.Execute(sql, new { IdMessage = messageId });
         }
     }

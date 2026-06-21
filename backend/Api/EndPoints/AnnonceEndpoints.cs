@@ -11,9 +11,11 @@ public static class AnnonceEndpoints
     {
         var group = app.MapGroup("/annonces");
 
-        group.MapGet("/", (string? recherche, int? categorieId, IRechercherAnnonceUseCase useCase) =>
+        group.MapGet("/", (string? recherche, int? categorieId, int? page, int? taillePage, IRechercherAnnonceUseCase useCase) =>
         {
-            return Results.Ok(useCase.Execute(recherche, categorieId));
+            var annonces = useCase.Execute(recherche, categorieId);
+
+            return Results.Ok(PagedResponse<Annonce>.Create(annonces, page ?? 1, taillePage ?? 6));
         });
 
         group.MapGet("/{annonceId:int}", (int annonceId, IConsulterAnnonceUseCase useCase) =>
@@ -23,7 +25,7 @@ public static class AnnonceEndpoints
             return annonce == null ? Results.NotFound() : Results.Ok(annonce);
         });
 
-        group.MapGet("/mes-annonces", (HttpContext context, IConsulterMesAnnoncesUseCase useCase, IJwtTokenService jwtTokenService) =>
+        group.MapGet("/mes-annonces", (int? page, int? taillePage, HttpContext context, IConsulterMesAnnoncesUseCase useCase, IJwtTokenService jwtTokenService) =>
         {
             var utilisateurId = GetUtilisateurConnecteId(context, jwtTokenService);
 
@@ -32,7 +34,9 @@ public static class AnnonceEndpoints
                 return Results.Unauthorized();
             }
 
-            return Results.Ok(useCase.Execute(utilisateurId.Value));
+            var annonces = useCase.Execute(utilisateurId.Value);
+
+            return Results.Ok(PagedResponse<Annonce>.Create(annonces, page ?? 1, taillePage ?? 6));
         });
 
         group.MapPost("/", (CreerAnnonceRequest request, HttpContext context, ICreerAnnonceUseCase useCase, IGererPhotosAnnonceUseCase photosUseCase, IJwtTokenService jwtTokenService) =>

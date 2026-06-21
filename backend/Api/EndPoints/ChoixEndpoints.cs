@@ -18,6 +18,11 @@ public static class ChoixEndpoints
             return Results.Ok(useCase.GetCommunes());
         });
 
+        group.MapGet("/etats-annonce", (IListerChoixUseCase useCase) =>
+        {
+            return Results.Ok(useCase.GetEtatsAnnonce());
+        });
+
         group.MapGet("/sexes", (IListerChoixUseCase useCase) =>
         {
             return Results.Ok(useCase.GetSexes());

@@ -1,0 +1,34 @@
+<main class="container py-4">
+  <div class="d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
+    <div>
+      <h1 class="h3 mb-1">Modifier une categorie</h1>
+      <p class="text-body-secondary mb-0">Changez le libelle affiche dans les listes de choix.</p>
+    </div>
+
+    <a routerLink="/categories" class="btn btn-outline-secondary align-self-start">Retour aux categories</a>
+  </div>
+
+  @if (erreur()) {
+    <div class="alert alert-danger" role="alert">{{ erreur() }}</div>
+  }
+
+  @if (categorieService.erreur()) {
+    <div class="alert alert-danger" role="alert">{{ categorieService.erreur() }}</div>
+  }
+
+  @if (categorieService.chargement()) {
+    <div class="alert alert-info" role="status">Chargement de la categorie...</div>
+  }
+
+  <form class="border rounded p-3" [formGroup]="categorieForm" (ngSubmit)="enregistrer()">
+    <div class="mb-3">
+      <label class="form-label" for="nom">Nom</label>
+      <input id="nom" class="form-control" type="text" formControlName="nom" />
+      @if (categorieForm.controls.nom.touched && categorieForm.controls.nom.invalid) {
+        <div class="form-text text-danger">Le nom est obligatoire.</div>
+      }
+    </div>
+
+    <button class="btn btn-success" type="submit" [disabled]="categorieService.chargement()">Enregistrer</button>
+  </form>
+</main>

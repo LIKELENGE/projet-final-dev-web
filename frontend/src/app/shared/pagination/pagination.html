@@ -1,0 +1,17 @@
+@if (totalPages > 1) {
+  <nav class="pagination-bar" aria-label="Pagination">
+    <div class="text-body-secondary small">
+      Page {{ page }} sur {{ totalPages }} - {{ total }} resultat(s)
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-outline-secondary btn-sm" type="button" [disabled]="!hasPrevious" (click)="previous()">
+        Precedent
+      </button>
+
+      <button class="btn btn-outline-secondary btn-sm" type="button" [disabled]="!hasNext" (click)="next()">
+        Suivant
+      </button>
+    </div>
+  </nav>
+}

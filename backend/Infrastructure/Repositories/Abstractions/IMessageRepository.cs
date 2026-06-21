@@ -1,6 +1,5 @@
-﻿using Infrastructure.models;
-using Infrastructure.Models;
 using System.Collections.Generic;
+using Infrastructure.models;
 
 namespace Infrastructure.Repositories.Abstractions
 {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using Dapper;
@@ -16,7 +16,7 @@ namespace Infrastructure.Repositories
         public ConversationRepository(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection") ??
-                throw new ArgumentNullException(nameof(configuration), "La connexion à la base de données a échoué : 'DefaultConnection' introuvable.");
+                throw new ArgumentNullException(nameof(configuration), "La connexion a la base de donnees a echoue : 'DefaultConnection' introuvable.");
         }
 
         private IDbConnection GetConnection() => new MySqlConnection(_connectionString);
@@ -24,21 +24,21 @@ namespace Infrastructure.Repositories
         public IEnumerable<Conversation> GetAllConversations()
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM Conversation";
+            const string sql = "SELECT * FROM conversation";
             return connection.Query<Conversation>(sql);
         }
 
         public Conversation? GetConversationById(int conversationId)
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM Conversation WHERE Id_Conversation = @IdConversation";
+            const string sql = "SELECT * FROM conversation WHERE id_conversation = @IdConversation";
             return connection.QuerySingleOrDefault<Conversation>(sql, new { IdConversation = conversationId });
         }
 
         public void AddConversation(Conversation conversation)
         {
             using var connection = GetConnection();
-            const string sql = @"INSERT INTO Conversation (Titre, LienPhoto) VALUES (@Titre, @LienPhoto); SELECT LAST_INSERT_ID();";
+            const string sql = @"INSERT INTO conversation (titre, lien_photo) VALUES (@Titre, @LienPhoto); SELECT LAST_INSERT_ID();";
             var id = connection.ExecuteScalar<long>(sql, new { conversation.Titre, conversation.LienPhoto });
             conversation.IdConversation = (int)id;
         }
@@ -46,14 +46,14 @@ namespace Infrastructure.Repositories
         public void UpdateConversation(Conversation conversation)
         {
             using var connection = GetConnection();
-            const string sql = "UPDATE Conversation SET Titre = @Titre, LienPhoto = @LienPhoto WHERE Id_Conversation = @IdConversation";
+            const string sql = "UPDATE conversation SET titre = @Titre, lien_photo = @LienPhoto WHERE id_conversation = @IdConversation";
             connection.Execute(sql, new { conversation.Titre, conversation.LienPhoto, conversation.IdConversation });
         }
 
         public void DeleteConversation(int conversationId)
         {
             using var connection = GetConnection();
-            const string sql = "DELETE FROM Conversation WHERE Id_Conversation = @IdConversation";
+            const string sql = "DELETE FROM conversation WHERE id_conversation = @IdConversation";
             connection.Execute(sql, new { IdConversation = conversationId });
         }
     }

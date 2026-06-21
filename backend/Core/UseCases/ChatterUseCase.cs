@@ -27,6 +27,11 @@ public class ChatterUseCase : IChatterUseCase
         _conversationGateway.AddConversation(conversation);
     }
 
+    public IEnumerable<Conversation> GetConversations()
+    {
+        return _conversationGateway.GetAllConversations();
+    }
+
     public Conversation? GetConversation(int conversationId)
     {
         if (conversationId <= 0)

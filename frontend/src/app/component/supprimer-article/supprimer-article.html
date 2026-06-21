@@ -1,0 +1,45 @@
+<main class="container py-4">
+  <div class="d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
+    <div>
+      <h1 class="h3 mb-1">Supprimer un article</h1>
+      <p class="text-body-secondary mb-0">Cette action supprime l'annonce et ses images liees en base.</p>
+    </div>
+
+    <a routerLink="/mes-articles" class="btn btn-outline-secondary align-self-start">Retour a mes articles</a>
+  </div>
+
+  @if (!utilisateurService.utilisateur()) {
+    <div class="alert alert-warning" role="alert">
+      Vous devez etre connecte pour supprimer un article.
+    </div>
+  } @else {
+    @if (erreur()) {
+      <div class="alert alert-danger" role="alert">{{ erreur() }}</div>
+    }
+
+    @if (annonceService.erreur()) {
+      <div class="alert alert-danger" role="alert">{{ annonceService.erreur() }}</div>
+    }
+
+    <section class="border rounded p-3">
+      @if (annonceService.annonceSelectionnee(); as annonce) {
+        <h2 class="h5">Confirmer la suppression</h2>
+        <p class="mb-1">
+          Article: <strong>{{ annonce.nom }}</strong>
+        </p>
+        <p class="text-body-secondary">
+          Categorie: {{ annonce.categorie?.nom || 'non renseignee' }}
+        </p>
+
+        <div class="d-flex gap-2">
+          <button class="btn btn-danger" type="button" (click)="supprimer()" [disabled]="annonceService.chargement()">
+            Supprimer
+          </button>
+          <a class="btn btn-outline-secondary" routerLink="/mes-articles">Annuler</a>
+        </div>
+      } @else {
+        <div class="text-body-secondary">Chargement de l'article...</div>
+      }
+    </section>
+  }
+</main>

@@ -10,6 +10,13 @@ public static class ConversationEndpoints
     {
         var group = app.MapGroup("/conversations");
 
+        group.MapGet("/", (int? page, int? taillePage, IChatterUseCase useCase) =>
+        {
+            var conversations = useCase.GetConversations();
+
+            return Results.Ok(PagedResponse<Conversation>.Create(conversations, page ?? 1, taillePage ?? 6));
+        });
+
         group.MapPost("/", (CreerConversationRequest request, IChatterUseCase useCase) =>
         {
             var conversation = new Conversation
@@ -30,9 +37,11 @@ public static class ConversationEndpoints
             return conversation == null ? Results.NotFound() : Results.Ok(conversation);
         });
 
-        group.MapGet("/{conversationId:int}/messages", (int conversationId, IChatterUseCase useCase) =>
+        group.MapGet("/{conversationId:int}/messages", (int conversationId, int? page, int? taillePage, IChatterUseCase useCase) =>
         {
-            return Results.Ok(useCase.GetMessages(conversationId));
+            var messages = useCase.GetMessages(conversationId);
+
+            return Results.Ok(PagedResponse<Message>.Create(messages, page ?? 1, taillePage ?? 6));
         });
 
         group.MapPost("/{conversationId:int}/messages", (int conversationId, EnvoyerMessageRequest request, IChatterUseCase useCase) =>

@@ -24,21 +24,21 @@ namespace Infrastructure.Repositories
         public IEnumerable<Admin> GetAllAdmins()
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM Admin";
+            const string sql = "SELECT * FROM admin";
             return connection.Query<Admin>(sql);
         }
 
         public Admin? GetAdminById(int compte)
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM Admin WHERE Compte = @Compte";
+            const string sql = "SELECT * FROM admin WHERE compte = @Compte";
             return connection.QuerySingleOrDefault<Admin>(sql, new { Compte = compte });
         }
 
         public void AddAdmin(Admin admin)
         {
             using var connection = GetConnection();
-            const string sql = @"INSERT INTO Admin (Nom, Prenom, Niveau, Mp)
+            const string sql = @"INSERT INTO admin (nom, prenom, niveau, mp)
                                  VALUES (@Nom, @Prenom, @Niveau, @Mp);
                                  SELECT LAST_INSERT_ID();";
 
@@ -49,12 +49,12 @@ namespace Infrastructure.Repositories
         public void UpdateAdmin(Admin admin)
         {
             using var connection = GetConnection();
-            const string sql = @"UPDATE Admin SET
-                                    Nom = @Nom,
-                                    Prenom = @Prenom,
-                                    Niveau = @Niveau,
-                                    Mp = @Mp
-                                 WHERE Compte = @Compte";
+            const string sql = @"UPDATE admin SET
+                                    nom = @Nom,
+                                    prenom = @Prenom,
+                                    niveau = @Niveau,
+                                    mp = @Mp
+                                 WHERE compte = @Compte";
 
             connection.Execute(sql, new { admin.Nom, admin.Prenom, admin.Niveau, admin.Mp, admin.Compte });
         }
@@ -62,7 +62,7 @@ namespace Infrastructure.Repositories
         public void DeleteAdmin(int compte)
         {
             using var connection = GetConnection();
-            const string sql = "DELETE FROM Admin WHERE Compte = @Compte";
+            const string sql = "DELETE FROM admin WHERE compte = @Compte";
             connection.Execute(sql, new { Compte = compte });
         }
     }

@@ -85,5 +85,12 @@
           </div>
         }
       </div>
+
+      <app-pagination
+        [page]="annonceService.annoncesPagination().page"
+        [totalPages]="annonceService.annoncesPagination().totalPages"
+        [total]="annonceService.annoncesPagination().total"
+        (pageChange)="rechercher($event)"
+      />
   </section>
 </main>

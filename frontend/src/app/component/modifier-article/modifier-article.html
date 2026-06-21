@@ -1,0 +1,81 @@
+<main class="container py-4">
+  <div class="d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
+    <div>
+      <h1 class="h3 mb-1">Modifier un article</h1>
+      <p class="text-body-secondary mb-0">Seul l'auteur de l'article peut enregistrer les changements.</p>
+    </div>
+
+    <a routerLink="/mes-articles" class="btn btn-outline-secondary align-self-start">Retour a mes articles</a>
+  </div>
+
+  @if (!utilisateurService.utilisateur()) {
+    <div class="alert alert-warning" role="alert">
+      Vous devez etre connecte pour modifier un article.
+    </div>
+  } @else {
+    @if (erreur()) {
+      <div class="alert alert-danger" role="alert">{{ erreur() }}</div>
+    }
+
+    @if (annonceService.erreur()) {
+      <div class="alert alert-danger" role="alert">{{ annonceService.erreur() }}</div>
+    }
+
+    @if (choixService.erreur()) {
+      <div class="alert alert-danger" role="alert">{{ choixService.erreur() }}</div>
+    }
+
+    @if (annonceService.chargement()) {
+      <div class="alert alert-info" role="status">Chargement de l'article...</div>
+    }
+
+    <form class="border rounded p-3" [formGroup]="articleForm" (ngSubmit)="enregistrer()">
+      <div class="row g-3">
+        <div class="col-12">
+          <label class="form-label" for="nom">Nom</label>
+          <input id="nom" class="form-control" type="text" formControlName="nom" />
+          @if (articleForm.controls.nom.touched && articleForm.controls.nom.invalid) {
+            <div class="form-text text-danger">Le nom est obligatoire.</div>
+          }
+        </div>
+
+        <div class="col-12">
+          <label class="form-label" for="description">Description</label>
+          <textarea id="description" class="form-control" rows="4" formControlName="description"></textarea>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <label class="form-label" for="prix">Prix</label>
+          <input id="prix" class="form-control" type="number" min="0" formControlName="prix" />
+        </div>
+
+        <div class="col-12 col-md-4">
+          <label class="form-label" for="categorieId">Categorie</label>
+          <select id="categorieId" class="form-select" formControlName="categorieId">
+            <option [ngValue]="null">Choisir une categorie</option>
+            @for (categorie of choixService.categories(); track categorie.id) {
+              <option [ngValue]="categorie.id">{{ categorie.nom }}</option>
+            }
+          </select>
+          @if (articleForm.controls.categorieId.touched && articleForm.controls.categorieId.invalid) {
+            <div class="form-text text-danger">La categorie est obligatoire.</div>
+          }
+        </div>
+
+        <div class="col-12 col-md-4">
+          <label class="form-label" for="communeId">Commune</label>
+          <select id="communeId" class="form-select" formControlName="communeId">
+            <option [ngValue]="null">Non renseignee</option>
+            @for (commune of choixService.communes(); track commune.id) {
+              <option [ngValue]="commune.id">{{ commune.nom }} {{ commune.codePostal || '' }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <button class="btn btn-success mt-4" type="submit" [disabled]="annonceService.chargement()">
+        Enregistrer
+      </button>
+    </form>
+  }
+</main>

@@ -1,0 +1,36 @@
+<main class="container py-4">
+  <div class="d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
+    <div>
+      <h1 class="h3 mb-1">Supprimer une categorie</h1>
+      <p class="text-body-secondary mb-0">La suppression peut etre refusee si des articles utilisent encore cette categorie.</p>
+    </div>
+
+    <a routerLink="/categories" class="btn btn-outline-secondary align-self-start">Retour aux categories</a>
+  </div>
+
+  @if (erreur()) {
+    <div class="alert alert-danger" role="alert">{{ erreur() }}</div>
+  }
+
+  @if (categorieService.erreur()) {
+    <div class="alert alert-danger" role="alert">{{ categorieService.erreur() }}</div>
+  }
+
+  <section class="border rounded p-3">
+    @if (categorieService.categorieSelectionnee(); as categorie) {
+      <h2 class="h5">Confirmer la suppression</h2>
+      <p>
+        Categorie: <strong>{{ categorie.nom }}</strong>
+      </p>
+
+      <div class="d-flex gap-2">
+        <button class="btn btn-danger" type="button" (click)="supprimer()" [disabled]="categorieService.chargement()">
+          Supprimer
+        </button>
+        <a class="btn btn-outline-secondary" routerLink="/categories">Annuler</a>
+      </div>
+    } @else {
+      <div class="text-body-secondary">Chargement de la categorie...</div>
+    }
+  </section>
+</main>

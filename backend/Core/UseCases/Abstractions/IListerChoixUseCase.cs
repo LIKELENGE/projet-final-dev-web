@@ -6,5 +6,6 @@ public interface IListerChoixUseCase
 {
     IEnumerable<Categorie> GetCategories();
     IEnumerable<Commune> GetCommunes();
+    IEnumerable<EtatAnnonce> GetEtatsAnnonce();
     IEnumerable<Sexe> GetSexes();
 }

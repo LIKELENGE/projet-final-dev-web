@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { finalize } from 'rxjs';
 import { getApiErrorMessage } from './api-error';
+import { PagedResponse, emptyPagedResponse } from './paged-response';
 import { UtilisateurService } from './utilisateur.service';
 
 export interface Categorie {
@@ -76,6 +77,8 @@ export class AnnonceService {
 
   readonly annonces = signal<Annonce[]>([]);
   readonly mesAnnonces = signal<Annonce[]>([]);
+  readonly annoncesPagination = signal<PagedResponse<Annonce>>(emptyPagedResponse<Annonce>(6));
+  readonly mesAnnoncesPagination = signal<PagedResponse<Annonce>>(emptyPagedResponse<Annonce>(6));
   readonly annonceSelectionnee = signal<Annonce | null>(null);
   readonly chargement = signal(false);
   readonly chargementMesAnnonces = signal(false);
@@ -87,8 +90,9 @@ export class AnnonceService {
     return token ? { Authorization: `Bearer ${token}` } : null;
   }
 
-  rechercher(recherche?: string, categorieId?: number | null): void {
+  rechercher(recherche?: string, categorieId?: number | null, page = 1, taillePage = 6): void {
     let params = new HttpParams();
+    params = params.set('page', page).set('taillePage', taillePage);
 
     if (recherche?.trim()) {
       params = params.set('recherche', recherche.trim());
@@ -102,10 +106,13 @@ export class AnnonceService {
     this.erreur.set(null);
 
     this.http
-      .get<Annonce[]>(this.apiUrl, { params })
+      .get<PagedResponse<Annonce>>(this.apiUrl, { params })
       .pipe(finalize(() => this.chargement.set(false)))
       .subscribe({
-        next: (annonces) => this.annonces.set(annonces),
+        next: (response) => {
+          this.annonces.set(response.items);
+          this.annoncesPagination.set(response);
+        },
         error: (error: unknown) => this.erreur.set(getApiErrorMessage(error)),
       });
   }
@@ -124,24 +131,31 @@ export class AnnonceService {
       });
   }
 
-  chargerMesAnnonces(): void {
+  chargerMesAnnonces(page = 1, taillePage = 6): void {
     const headers = this.authorizationHeaders;
 
     if (!headers) {
       this.mesAnnonces.set([]);
+      this.mesAnnoncesPagination.set(emptyPagedResponse<Annonce>(taillePage));
       return;
     }
+
+    const params = new HttpParams().set('page', page).set('taillePage', taillePage);
 
     this.chargementMesAnnonces.set(true);
     this.erreur.set(null);
 
     this.http
-      .get<Annonce[]>(`${this.apiUrl}/mes-annonces`, {
+      .get<PagedResponse<Annonce>>(`${this.apiUrl}/mes-annonces`, {
         headers,
+        params,
       })
       .pipe(finalize(() => this.chargementMesAnnonces.set(false)))
       .subscribe({
-        next: (annonces) => this.mesAnnonces.set(annonces),
+        next: (response) => {
+          this.mesAnnonces.set(response.items);
+          this.mesAnnoncesPagination.set(response);
+        },
         error: (error: unknown) => this.erreur.set(getApiErrorMessage(error)),
       });
   }
@@ -224,7 +238,7 @@ export class AnnonceService {
       });
   }
 
-  supprimer(annonceId: number): void {
+  supprimer(annonceId: number, apresSuppression?: () => void): void {
     const headers = this.authorizationHeaders;
 
     if (!headers) {
@@ -244,6 +258,7 @@ export class AnnonceService {
         next: () => {
           this.annonces.update((annonces) => annonces.filter((annonce) => annonce.id !== annonceId));
           this.mesAnnonces.update((annonces) => annonces.filter((annonce) => annonce.id !== annonceId));
+          apresSuppression?.();
         },
         error: (error: unknown) => this.erreur.set(getApiErrorMessage(error)),
       });

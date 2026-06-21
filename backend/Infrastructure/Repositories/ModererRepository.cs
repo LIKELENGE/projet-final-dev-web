@@ -24,28 +24,28 @@ namespace Infrastructure.Repositories
         public IEnumerable<Moderer> GetAllModerations()
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM Moderer";
+            const string sql = "SELECT * FROM moderer";
             return connection.Query<Moderer>(sql);
         }
 
         public Moderer? GetModerationById(int moderationId)
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM Moderer WHERE Id_Moderation = @IdModeration";
+            const string sql = "SELECT * FROM moderer WHERE id_moderation = @IdModeration";
             return connection.QuerySingleOrDefault<Moderer>(sql, new { IdModeration = moderationId });
         }
 
         public IEnumerable<Moderer> GetModerationsByAnnonceId(int annonceId)
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM Moderer WHERE Id_Annonce = @IdAnnonce";
+            const string sql = "SELECT * FROM moderer WHERE id_annonce = @IdAnnonce";
             return connection.Query<Moderer>(sql, new { IdAnnonce = annonceId });
         }
 
         public void AddModeration(Moderer moderation)
         {
             using var connection = GetConnection();
-            const string sql = @"INSERT INTO Moderer (Compte, Id_Annonce, Id_Etat, DateStatut, DelaiStatut, Illimite)
+            const string sql = @"INSERT INTO moderer (compte, id_annonce, id_etat, date_statut, delai_statut, illimite)
                                  VALUES (@Compte, @IdAnnonce, @IdEtat, @DateStatut, @DelaiStatut, @Illimite);
                                  SELECT LAST_INSERT_ID();";
 
@@ -56,14 +56,14 @@ namespace Infrastructure.Repositories
         public void UpdateModeration(Moderer moderation)
         {
             using var connection = GetConnection();
-            const string sql = @"UPDATE Moderer SET
-                                    Compte = @Compte,
-                                    Id_Annonce = @IdAnnonce,
-                                    Id_Etat = @IdEtat,
-                                    DateStatut = @DateStatut,
-                                    DelaiStatut = @DelaiStatut,
-                                    Illimite = @Illimite
-                                 WHERE Id_Moderation = @IdModeration";
+            const string sql = @"UPDATE moderer SET
+                                    compte = @Compte,
+                                    id_annonce = @IdAnnonce,
+                                    id_etat = @IdEtat,
+                                    date_statut = @DateStatut,
+                                    delai_statut = @DelaiStatut,
+                                    illimite = @Illimite
+                                 WHERE id_moderation = @IdModeration";
 
             connection.Execute(sql, moderation);
         }
@@ -71,7 +71,7 @@ namespace Infrastructure.Repositories
         public void DeleteModeration(int moderationId)
         {
             using var connection = GetConnection();
-            const string sql = "DELETE FROM Moderer WHERE Id_Moderation = @IdModeration";
+            const string sql = "DELETE FROM moderer WHERE id_moderation = @IdModeration";
             connection.Execute(sql, new { IdModeration = moderationId });
         }
     }

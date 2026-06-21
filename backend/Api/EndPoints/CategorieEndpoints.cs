@@ -10,6 +10,20 @@ public static class CategorieEndpoints
     {
         var group = app.MapGroup("/categories");
 
+        group.MapGet("/", (int? page, int? taillePage, IListerChoixUseCase useCase) =>
+        {
+            var categories = useCase.GetCategories();
+
+            return Results.Ok(PagedResponse<Categorie>.Create(categories, page ?? 1, taillePage ?? 8));
+        });
+
+        group.MapGet("/{categorieId:int}", (int categorieId, IListerChoixUseCase useCase) =>
+        {
+            var categorie = useCase.GetCategories().FirstOrDefault(categorie => categorie.Id == categorieId);
+
+            return categorie == null ? Results.NotFound() : Results.Ok(categorie);
+        });
+
         group.MapPost("/", (CreerCategorieRequest request, ICreerCategorieUseCase useCase) =>
         {
             var categorie = new Categorie

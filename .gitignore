@@ -5,6 +5,7 @@
 bin/
 obj/
 out/
+.verify-build/
 
 # User-specific files
 *.user

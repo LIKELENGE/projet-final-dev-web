@@ -24,28 +24,28 @@ namespace Infrastructure.Repositories
         public IEnumerable<FichierMessage> GetAllFichiersMessage()
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM FichierMessage";
+            const string sql = "SELECT * FROM fichier_message";
             return connection.Query<FichierMessage>(sql);
         }
 
         public FichierMessage? GetFichierMessageById(int lienId)
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM FichierMessage WHERE Id_Lien = @IdLien";
+            const string sql = "SELECT * FROM fichier_message WHERE id_lien = @IdLien";
             return connection.QuerySingleOrDefault<FichierMessage>(sql, new { IdLien = lienId });
         }
 
         public IEnumerable<FichierMessage> GetFichiersByMessageId(int messageId)
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM FichierMessage WHERE Id_Message = @IdMessage";
+            const string sql = "SELECT * FROM fichier_message WHERE id_message = @IdMessage";
             return connection.Query<FichierMessage>(sql, new { IdMessage = messageId });
         }
 
         public void AddFichierMessage(FichierMessage fichierMessage)
         {
             using var connection = GetConnection();
-            const string sql = @"INSERT INTO FichierMessage (Id_Message, Lien)
+            const string sql = @"INSERT INTO fichier_message (id_message, lien)
                                  VALUES (@IdMessage, @Lien);
                                  SELECT LAST_INSERT_ID();";
 
@@ -56,7 +56,7 @@ namespace Infrastructure.Repositories
         public void DeleteFichierMessage(int lienId)
         {
             using var connection = GetConnection();
-            const string sql = "DELETE FROM FichierMessage WHERE Id_Lien = @IdLien";
+            const string sql = "DELETE FROM fichier_message WHERE id_lien = @IdLien";
             connection.Execute(sql, new { IdLien = lienId });
         }
     }

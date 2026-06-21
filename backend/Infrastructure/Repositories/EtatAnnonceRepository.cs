@@ -24,21 +24,21 @@ namespace Infrastructure.Repositories
         public IEnumerable<EtatAnnonce> GetAllEtatsAnnonce()
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM EtatAnnonce";
+            const string sql = "SELECT * FROM etat_annonce";
             return connection.Query<EtatAnnonce>(sql);
         }
 
         public EtatAnnonce? GetEtatAnnonceById(int etatId)
         {
             using var connection = GetConnection();
-            const string sql = "SELECT * FROM EtatAnnonce WHERE Id_Etat = @IdEtat";
+            const string sql = "SELECT * FROM etat_annonce WHERE id_etat = @IdEtat";
             return connection.QuerySingleOrDefault<EtatAnnonce>(sql, new { IdEtat = etatId });
         }
 
         public void AddEtatAnnonce(EtatAnnonce etatAnnonce)
         {
             using var connection = GetConnection();
-            const string sql = @"INSERT INTO EtatAnnonce (NomEtat) VALUES (@NomEtat); SELECT LAST_INSERT_ID();";
+            const string sql = @"INSERT INTO etat_annonce (nom_etat) VALUES (@NomEtat); SELECT LAST_INSERT_ID();";
             var id = connection.ExecuteScalar<long>(sql, etatAnnonce);
             etatAnnonce.IdEtat = (int)id;
         }
@@ -46,14 +46,14 @@ namespace Infrastructure.Repositories
         public void UpdateEtatAnnonce(EtatAnnonce etatAnnonce)
         {
             using var connection = GetConnection();
-            const string sql = "UPDATE EtatAnnonce SET NomEtat = @NomEtat WHERE Id_Etat = @IdEtat";
+            const string sql = "UPDATE etat_annonce SET nom_etat = @NomEtat WHERE id_etat = @IdEtat";
             connection.Execute(sql, etatAnnonce);
         }
 
         public void DeleteEtatAnnonce(int etatId)
         {
             using var connection = GetConnection();
-            const string sql = "DELETE FROM EtatAnnonce WHERE Id_Etat = @IdEtat";
+            const string sql = "DELETE FROM etat_annonce WHERE id_etat = @IdEtat";
             connection.Execute(sql, new { IdEtat = etatId });
         }
     }

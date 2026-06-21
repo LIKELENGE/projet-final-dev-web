@@ -1,0 +1,14 @@
+.pagination-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 575.98px) {
+  .pagination-bar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

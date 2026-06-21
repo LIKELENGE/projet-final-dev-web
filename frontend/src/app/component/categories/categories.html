@@ -1,0 +1,44 @@
+<main class="container py-4">
+  <div class="d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
+    <div>
+      <h1 class="h3 mb-1">Categories</h1>
+      <p class="text-body-secondary mb-0">Gerez les libelles utilises pour classer les articles.</p>
+    </div>
+
+    <a routerLink="/categories/nouveau" class="btn btn-primary align-self-start">Nouvelle categorie</a>
+  </div>
+
+  @if (categorieService.erreur()) {
+    <div class="alert alert-danger" role="alert">{{ categorieService.erreur() }}</div>
+  }
+
+  @if (categorieService.message()) {
+    <div class="alert alert-success" role="status">{{ categorieService.message() }}</div>
+  }
+
+  @if (categorieService.chargement()) {
+    <div class="alert alert-info" role="status">Chargement des categories...</div>
+  }
+
+  <section class="list-group">
+    @for (categorie of categorieService.categories(); track categorie.id) {
+      <div class="list-group-item d-flex flex-column flex-md-row justify-content-between gap-2">
+        <div class="fw-semibold">{{ categorie.nom }}</div>
+
+        <div class="d-flex gap-2">
+          <a class="btn btn-sm btn-outline-primary" [routerLink]="['/categories', categorie.id, 'modifier']">Modifier</a>
+          <a class="btn btn-sm btn-outline-danger" [routerLink]="['/categories', categorie.id, 'supprimer']">Supprimer</a>
+        </div>
+      </div>
+    } @empty {
+      <div class="border rounded p-3 text-body-secondary">Aucune categorie disponible.</div>
+    }
+  </section>
+
+  <app-pagination
+    [page]="categorieService.pagination().page"
+    [totalPages]="categorieService.pagination().totalPages"
+    [total]="categorieService.pagination().total"
+    (pageChange)="chargerPage($event)"
+  />
+</main>

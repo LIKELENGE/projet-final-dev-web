@@ -1,0 +1,26 @@
+<main class="container py-4">
+  <div class="d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
+    <div>
+      <h1 class="h3 mb-1">Nouvelle categorie</h1>
+      <p class="text-body-secondary mb-0">Ajoutez un libelle reutilisable dans les formulaires d'article.</p>
+    </div>
+
+    <a routerLink="/categories" class="btn btn-outline-secondary align-self-start">Retour aux categories</a>
+  </div>
+
+  @if (categorieService.erreur()) {
+    <div class="alert alert-danger" role="alert">{{ categorieService.erreur() }}</div>
+  }
+
+  <form class="border rounded p-3" [formGroup]="categorieForm" (ngSubmit)="creer()">
+    <div class="mb-3">
+      <label class="form-label" for="nom">Nom</label>
+      <input id="nom" class="form-control" type="text" formControlName="nom" />
+      @if (categorieForm.controls.nom.touched && categorieForm.controls.nom.invalid) {
+        <div class="form-text text-danger">Le nom est obligatoire.</div>
+      }
+    </div>
+
+    <button class="btn btn-success" type="submit" [disabled]="categorieService.chargement()">Creer</button>
+  </form>
+</main>
